@@ -1,0 +1,23 @@
+# Node.js (backend)
+Backend_Venue-Seat-Explorer/node_modules/
+Backend_Venue-Seat-Explorer/.env
+Backend_Venue-Seat-Explorer/dist/
+
+# Angular (frontend)
+Frontend_Venue-Seat-Explorer/node_modules/
+Frontend_Venue-Seat-Explorer/dist/
+Frontend_Venue-Seat-Explorer/.angular/
+Frontend_Venue-Seat-Explorer/.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
