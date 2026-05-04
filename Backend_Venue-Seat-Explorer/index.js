@@ -5,6 +5,12 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 
+const venueRoutes = require("./routes/venueRoutes");
+const seatRoutes = require("./routes/seatRoutes");
+const mediaRoutes = require("./routes/mediaRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
+const userRoutes = require("./routes/userRoutes");
+
 const app = express();
 
 connectDB();
@@ -14,6 +20,19 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Seat Explorer API running");
+});
+
+// API routes
+app.use("/api/venues", venueRoutes);
+app.use("/api/seats", seatRoutes);
+app.use("/api/media", mediaRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/users", userRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
 });
 
 const PORT = process.env.PORT || 5000;
