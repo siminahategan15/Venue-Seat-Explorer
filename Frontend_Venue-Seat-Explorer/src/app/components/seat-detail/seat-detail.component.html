@@ -1,0 +1,24 @@
+<p-progressSpinner *ngIf="loading"></p-progressSpinner>
+
+<div *ngIf="seat" class="p-4">
+  <h1 class="text-3xl font-bold mb-2">Row {{ seat.row }}, Seat {{ seat.seatNumber }}</h1>
+
+  <h2 class="text-2xl font-bold mt-5 mb-3">Reviews</h2>
+  <p *ngIf="reviews.length === 0">No reviews yet.</p>
+  <div *ngFor="let review of reviews" class="mb-3">
+    <p-card>
+      <p>View: {{ review.ratingView }}/5 | Comfort: {{ review.ratingComfort }}/5</p>
+      <p *ngIf="review.comment" class="mt-2">{{ review.comment }}</p>
+    </p-card>
+  </div>
+
+  <h2 class="text-2xl font-bold mt-5 mb-3">Media</h2>
+  <p *ngIf="media.length === 0">No photos or videos yet.</p>
+  <div class="grid">
+    <div *ngFor="let item of media" class="col-12 md:col-4">
+      <img *ngIf="item.type === 'image'" [src]="item.url" [alt]="item.caption" class="w-full border-round" />
+      <video *ngIf="item.type === 'video'" [src]="item.url" controls class="w-full border-round"></video>
+      <p *ngIf="item.caption" class="mt-1">{{ item.caption }}</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="flex justify-content-center p-4">
+  <p-card header="Login" class="w-full md:w-6 lg:w-4">
+    <div class="flex flex-column gap-3">
+      <span class="p-float-label">
+        <input pInputText id="email" [(ngModel)]="email" class="w-full" />
+        <label for="email">Email</label>
+      </span>
+      <span class="p-float-label">
+        <input pInputText id="password" type="password" [(ngModel)]="password" class="w-full" />
+        <label for="password">Password</label>
+      </span>
+      <p-button label="Login" (onClick)="onLogin()" class="w-full"></p-button>
+      <p>Don't have an account? <a routerLink="/register">Register</a></p>
+    </div>
+  </p-card>
+</div>
