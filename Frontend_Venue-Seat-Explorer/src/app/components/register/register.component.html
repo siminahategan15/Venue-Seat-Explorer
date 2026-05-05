@@ -1,0 +1,28 @@
+<div class="flex justify-content-center p-4">
+  <p-card header="Register" class="w-full md:w-6 lg:w-4">
+    <div class="flex flex-column gap-3">
+      <span class="p-float-label">
+        <input pInputText id="username" [(ngModel)]="username" class="w-full" />
+        <label for="username">Username</label>
+      </span>
+      <span class="p-float-label">
+        <input pInputText id="firstName" [(ngModel)]="firstName" class="w-full" />
+        <label for="firstName">First Name</label>
+      </span>
+      <span class="p-float-label">
+        <input pInputText id="lastName" [(ngModel)]="lastName" class="w-full" />
+        <label for="lastName">Last Name</label>
+      </span>
+      <span class="p-float-label">
+        <input pInputText id="email" [(ngModel)]="email" class="w-full" />
+        <label for="email">Email</label>
+      </span>
+      <span class="p-float-label">
+        <input pInputText id="password" type="password" [(ngModel)]="password" class="w-full" />
+        <label for="password">Password</label>
+      </span>
+      <p-button label="Register" (onClick)="onRegister()" class="w-full"></p-button>
+      <p>Already have an account? <a routerLink="/login">Login</a></p>
+    </div>
+  </p-card>
+</div>

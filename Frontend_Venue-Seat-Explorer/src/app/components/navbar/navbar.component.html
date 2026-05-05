@@ -1,0 +1,21 @@
+<p-menubar [model]="[]">
+  <ng-template pTemplate="start">
+    <a routerLink="/" class="navbar-brand">
+      <i class="pi pi-building text-xl mr-2"></i>
+      <span class="brand-text">Venue Seat Explorer</span>
+    </a>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="navbar-links">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <i class="pi pi-home"></i> Home
+      </a>
+      <a routerLink="/login" routerLinkActive="active-link" class="nav-link">
+        <i class="pi pi-sign-in"></i> Login
+      </a>
+      <a routerLink="/register" routerLinkActive="active-link" class="nav-link">
+        <i class="pi pi-user-plus"></i> Register
+      </a>
+    </div>
+  </ng-template>
+</p-menubar>
