@@ -7,11 +7,23 @@
 
   <div class="grid">
     <div *ngFor="let venue of venues" class="col-12 md:col-6 lg:col-4">
-      <p-card [header]="venue.name" [subheader]="venue.city + ', ' + venue.country"
-              [routerLink]="['/venues', venue._id]">
+      <p-card
+        [header]="venue.name"
+        [subheader]="venue.city + ', ' + venue.country"
+        [routerLink]="['/venues', venue._id]"
+      >
         <p *ngIf="venue.description">{{ venue.description }}</p>
         <p class="mt-2">Capacity: {{ venue.capacity }}</p>
       </p-card>
     </div>
   </div>
 </div>
+<button
+  *ngIf="isUserAdmin()"
+  pButton
+  type="button"
+  label="Create Venue"
+  icon="pi pi-plus"
+  class="p-button-success"
+  (click)="router.navigate(['/venues/create'])"
+></button>

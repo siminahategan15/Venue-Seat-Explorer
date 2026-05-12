@@ -1,0 +1,68 @@
+<p-tabView [(activeIndex)]="activeTab">
+  <p-tabPanel header="Reviews">
+    <!-- Review Form -->
+    <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()">
+      <label for="seat">Select Seat:</label>
+      <select id="seat" formControlName="seatId">
+        <option *ngFor="let seat of seats" [value]="seat._id">
+          {{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}
+        </option>
+      </select>
+
+      <label for="ratingView">View Rating:</label>
+      <input type="number" id="ratingView" formControlName="ratingView" />
+
+      <label for="ratingComfort">Comfort Rating:</label>
+      <input type="number" id="ratingComfort" formControlName="ratingComfort" />
+
+      <label for="comment">Comment:</label>
+      <textarea id="comment" formControlName="comment"></textarea>
+
+      <label for="photos">Upload Photos:</label>
+      <input type="file" id="photos" (change)="onUpload($event)" multiple />
+
+      <button type="submit" [disabled]="reviewForm.invalid">
+        Submit Review
+      </button>
+    </form>
+
+    <!-- List of Reviews -->
+    <div *ngFor="let review of reviews">
+      <p><strong>Seat:</strong> {{ review.seatId }}</p>
+      <p><strong>View Rating:</strong> {{ review.ratingView }}</p>
+      <p><strong>Comfort Rating:</strong> {{ review.ratingComfort }}</p>
+      <p><strong>Comment:</strong> {{ review.comment }}</p>
+    </div>
+  </p-tabPanel>
+
+  <p-tabPanel header="Photo Gallery">
+    <h3>Photo Gallery</h3>
+    <label for="filterSeat">Filter by Seat:</label>
+    <select
+      id="filterSeat"
+      [(ngModel)]="filter.seatId"
+      (change)="applyFilters()"
+    >
+      <option value="">All Seats</option>
+      <option *ngFor="let seat of seats" [value]="seat._id">
+        {{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}
+      </option>
+    </select>
+
+    <label for="filterDate">Filter by Date:</label>
+    <input
+      type="date"
+      id="filterDate"
+      [(ngModel)]="filter.date"
+      (change)="applyFilters()"
+    />
+
+    <div class="gallery">
+      <img
+        *ngFor="let photo of filteredPhotos"
+        [src]="photo.url"
+        [alt]="photo.description"
+      />
+    </div>
+  </p-tabPanel>
+</p-tabView>

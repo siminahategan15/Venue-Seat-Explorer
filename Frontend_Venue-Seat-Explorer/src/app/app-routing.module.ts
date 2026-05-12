@@ -5,14 +5,35 @@ import { VenueDetailComponent } from './components/venue-detail/venue-detail.com
 import { SeatDetailComponent } from './components/seat-detail/seat-detail.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AuthGuard } from './guards/auth-guard.guard';
+import { CreateVenueComponent } from './components/create-venue/create-venue.component';
 
 const routes: Routes = [
-  { path: '', component: VenueListComponent },
-  { path: 'venues/:id', component: VenueDetailComponent },
-  { path: 'seats/:id', component: SeatDetailComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: '**', redirectTo: '' },
+  {
+    path: 'venues/create',
+    component: CreateVenueComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'login',
+
+    component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  { path: '', component: VenueListComponent, canActivate: [AuthGuard] },
+  {
+    path: 'venues/:id',
+    component: VenueDetailComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'seats/:id',
+    component: SeatDetailComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({

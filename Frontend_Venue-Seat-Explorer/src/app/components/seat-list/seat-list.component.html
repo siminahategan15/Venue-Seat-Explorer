@@ -1,0 +1,99 @@
+<div class="seat-list-container">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-2xl font-bold">Available Seats</h3>
+    <button
+      pButton
+      type="button"
+      label="Add Seat"
+      icon="pi pi-plus"
+      *ngIf="isAdmin"
+      (click)="showCreateForm = !showCreateForm"
+      class="p-button-success"
+    ></button>
+  </div>
+
+  <!-- Create Seat Form -->
+  <div *ngIf="showCreateForm && isAdmin" class="mb-6">
+    <p-card>
+      <form [formGroup]="createSeatForm" (ngSubmit)="onCreateSeat()">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="field">
+            <label>Seat Number</label>
+            <input
+              pInputText
+              type="text"
+              formControlName="seatNumber"
+              placeholder="A1"
+            />
+          </div>
+          <div class="field">
+            <label>Row</label>
+            <input
+              pInputText
+              type="text"
+              formControlName="row"
+              placeholder="A"
+            />
+          </div>
+          <div class="field">
+            <label>Section</label>
+            <input
+              pInputText
+              type="text"
+              formControlName="section"
+              placeholder="VIP"
+            />
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <input
+              pInputText
+              type="text"
+              formControlName="category"
+              placeholder="Premium"
+            />
+          </div>
+        </div>
+        <button
+          pButton
+          type="submit"
+          label="Create Seat"
+          class="mt-4"
+          [loading]="loading"
+        ></button>
+      </form>
+    </p-card>
+  </div>
+
+  <!-- Seats Grid -->
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+    <div
+      *ngFor="let seat of seats"
+      class="seat-card p-4 border rounded cursor-pointer hover:shadow-lg transition-all"
+      [class.selected]="selectedSeat?._id === seat._id"
+      (click)="selectSeat(seat)"
+    >
+      <p class="font-bold text-lg">{{ seat.seatNumber }}</p>
+      <p class="text-sm text-gray-600">Row {{ seat.row }}</p>
+      <p class="text-xs text-gray-500 mt-1">{{ seat.section }}</p>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-trash"
+        class="p-button-sm p-button-danger mt-2 w-full"
+        *ngIf="isAdmin"
+        (click)="deleteSeat(seat._id)"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Selected Seat Details -->
+  <div *ngIf="selectedSeat" class="mt-6">
+    <p-card>
+      <ng-template pTemplate="header">
+        <h4 class="font-bold">Seat Details: {{ selectedSeat.seatNumber }}</h4>
+      </ng-template>
+      <app-seat-detail [seatId]="selectedSeat._id"></app-seat-detail>
+    </p-card>
+  </div>
+</div>

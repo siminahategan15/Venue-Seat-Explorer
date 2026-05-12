@@ -7,6 +7,12 @@ export interface Media {
   url: string;
   caption?: string;
   uploadedBy?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  isFlagged?: boolean;
+  flagReason?: string;
+  isDeleted?: boolean;
+  deletedReason?: string;
+  viewCount?: number;
+  helpfulCount?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

@@ -20,12 +20,16 @@ export class VenueService {
     return this.http.get<Venue>(`${this.apiUrl}/${id}`);
   }
 
-  createVenue(venue: Partial<Venue>): Observable<Venue> {
-    return this.http.post<Venue>(this.apiUrl, venue);
+  createVenue(venueData: any) {
+    return this.http.post<any>(this.apiUrl, venueData);
   }
 
-  updateVenue(id: string, venue: Partial<Venue>): Observable<Venue> {
-    return this.http.put<Venue>(`${this.apiUrl}/${id}`, venue);
+  getVenueAdminStats() {
+    return this.http.get<any>(`${this.apiUrl}/admin/stats`);
+  }
+
+  updateVenue(id: string, data: any) {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, data);
   }
 
   deleteVenue(id: string): Observable<void> {

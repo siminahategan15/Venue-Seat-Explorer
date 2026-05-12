@@ -25,7 +25,23 @@ export class MediaService {
     return this.http.post<Media>(`${this.apiUrl}/upload/${seatId}`, formData);
   }
 
-  deleteMedia(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  flagMedia(mediaId: string, reason: string) {
+    return this.http.post(`${this.apiUrl}/${mediaId}/flag`, { reason });
+  }
+
+  deleteMedia(mediaId: string, data: any) {
+    return this.http.delete(`${this.apiUrl}/${mediaId}`, { body: data });
+  }
+
+  getFlaggedMedia(venueId: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/flagged/${venueId}`);
+  }
+
+  markHelpful(mediaId: string) {
+    return this.http.post(`${this.apiUrl}/${mediaId}/helpful`, {});
+  }
+
+  getMediaByVenue(venueId: string): Observable<Media[]> {
+    return this.http.get<Media[]>(`${this.apiUrl}/venue/${venueId}`);
   }
 }

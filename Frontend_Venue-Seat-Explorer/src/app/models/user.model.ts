@@ -1,10 +1,12 @@
 export interface User {
   _id: string;
-  username: string;
+  firebaseUid: string;
   email: string;
-  password?: string;
+  username: string;
   firstName: string;
   lastName: string;
-  createdAt?: string;
-  updatedAt?: string;
+  password?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  role: 'admin' | 'user';
 }

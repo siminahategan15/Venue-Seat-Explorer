@@ -16,7 +16,7 @@ export class UserService {
     return this.http.get<User[]>(this.apiUrl);
   }
 
-  getUserById(id: string): Observable<User> {
+  getUserByFirebaseId(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 

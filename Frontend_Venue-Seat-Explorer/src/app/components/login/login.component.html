@@ -1,16 +1,56 @@
-<div class="flex justify-content-center p-4">
-  <p-card header="Login" class="w-full md:w-6 lg:w-4">
-    <div class="flex flex-column gap-3">
-      <span class="p-float-label">
-        <input pInputText id="email" [(ngModel)]="email" class="w-full" />
-        <label for="email">Email</label>
-      </span>
-      <span class="p-float-label">
-        <input pInputText id="password" type="password" [(ngModel)]="password" class="w-full" />
-        <label for="password">Password</label>
-      </span>
-      <p-button label="Login" (onClick)="onLogin()" class="w-full"></p-button>
-      <p>Don't have an account? <a routerLink="/register">Register</a></p>
+<div class="login-container flex align-items-center justify-content-center">
+  <p-card class="login-box shadow-2 surface-card border-round">
+    <div class="text-center mb-5">
+      <h1 class="text-4xl font-bold mb-2">Venue Seat Explorer</h1>
+      <h2 class="text-2xl font-semibold text-900">Sign In</h2>
+    </div>
+
+    <div *ngIf="error" class="p-message p-message-error mb-4">
+      <span>{{ error }}</span>
+    </div>
+
+    <div class="p-fluid">
+      <div class="field mb-4">
+        <label for="email" class="font-semibold mb-2">Email</label>
+        <input
+          id="email"
+          pInputText
+          type="email"
+          [(ngModel)]="email"
+          placeholder="Enter your email"
+        />
+      </div>
+
+      <div class="field mb-5">
+        <label for="password" class="font-semibold mb-2">Password</label>
+        <input
+          id="password"
+          pInputText
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Enter your password"
+        />
+      </div>
+
+      <button
+        pButton
+        type="button"
+        label="Sign In"
+        class="w-full mb-4"
+        (click)="onLogin()"
+        [loading]="loading"
+      ></button>
+    </div>
+
+    <div class="text-center mt-4">
+      <span class="text-700">Don't have an account?</span>
+      <button
+        pButton
+        type="button"
+        label="Create one"
+        class="p-button-text w-full mt-3"
+        (click)="goToRegister()"
+      ></button>
     </div>
   </p-card>
 </div>

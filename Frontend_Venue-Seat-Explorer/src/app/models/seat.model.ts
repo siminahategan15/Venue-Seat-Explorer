@@ -1,11 +1,13 @@
 export interface Seat {
   _id: string;
   venueId: string;
-  sectionId: string;
-  row: number;
-  seatNumber: number;
+  sectionId?: string;
+  row: string;
+  seatNumber: string;
+  section?: string;
+  category?: string;
   x?: number;
   y?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

@@ -1,24 +1,228 @@
 <p-progressSpinner *ngIf="loading"></p-progressSpinner>
 
 <div *ngIf="seat" class="p-4">
-  <h1 class="text-3xl font-bold mb-2">Row {{ seat.row }}, Seat {{ seat.seatNumber }}</h1>
+  <h1 class="text-3xl font-bold mb-2">
+    Row {{ seat.row }}, Seat {{ seat.seatNumber }}
+  </h1>
 
-  <h2 class="text-2xl font-bold mt-5 mb-3">Reviews</h2>
-  <p *ngIf="reviews.length === 0">No reviews yet.</p>
+  <!-- Add Review Section -->
+  <div class="mt-6 mb-4">
+    <button
+      pButton
+      type="button"
+      [label]="showReviewForm ? 'Cancel Review' : 'Add Review'"
+      icon="pi pi-plus"
+      (click)="toggleReviewForm()"
+      [disabled]="!isUserLoggedIn()"
+      [class.p-button-secondary]="showReviewForm"
+    ></button>
+  </div>
+
+  <!-- Review Form -->
+  <div
+    *ngIf="showReviewForm && isUserLoggedIn()"
+    class="review-form mb-5 p-4 border-1 surface-border border-round"
+  >
+    <h3 class="text-xl font-bold mb-3">Write a Review</h3>
+
+    <div class="mb-3">
+      <label class="block mb-2">View Rating</label>
+      <div class="flex gap-2">
+        <p-rating
+          [(ngModel)]="ratingView"
+          [cancel]="false"
+          iconCancelClass="pi pi-star"
+          iconOnClass="pi pi-star-fill"
+          iconOffClass="pi pi-star"
+        ></p-rating>
+        <span class="font-bold">{{ ratingView }}/5</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="block mb-2">Comfort Rating</label>
+      <div class="flex gap-2">
+        <p-rating
+          [(ngModel)]="ratingComfort"
+          [cancel]="false"
+          iconCancelClass="pi pi-star"
+          iconOnClass="pi pi-star-fill"
+          iconOffClass="pi pi-star"
+        ></p-rating>
+        <span class="font-bold">{{ ratingComfort }}/5</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="comment" class="block mb-2">Comment</label>
+      <textarea
+        id="comment"
+        [(ngModel)]="comment"
+        placeholder="Share your experience..."
+        rows="4"
+        class="w-full border-1 border-round p-2"
+      ></textarea>
+    </div>
+
+    <div class="flex gap-2">
+      <button
+        pButton
+        type="button"
+        label="Submit Review"
+        icon="pi pi-check"
+        (click)="submitReview()"
+        [loading]="submittingReview"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        (click)="resetReviewForm()"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <h2 class="text-2xl font-bold mt-6 mb-3">Reviews</h2>
+  <p *ngIf="reviews.length === 0" class="text-gray-500">
+    No reviews yet. Be the first to review this seat!
+  </p>
   <div *ngFor="let review of reviews" class="mb-3">
     <p-card>
-      <p>View: {{ review.ratingView }}/5 | Comfort: {{ review.ratingComfort }}/5</p>
-      <p *ngIf="review.comment" class="mt-2">{{ review.comment }}</p>
+      <div class="flex justify-content-between align-items-start">
+        <div>
+          <p class="mb-2">
+            <span class="font-bold">View:</span> {{ review.ratingView }}/5 |
+            <span class="font-bold">Comfort:</span> {{ review.ratingComfort }}/5
+          </p>
+          <p *ngIf="review.comment" class="mt-2 text-gray-700">
+            {{ review.comment }}
+          </p>
+          <!-- <small class="text-gray-500" *ngIf="review.userId"
+            >By {{ review.userId?.username }}</small
+          > -->
+        </div>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-trash"
+          class="p-button-rounded p-button-danger p-button-text"
+          (click)="deleteReview(review._id)"
+        ></button>
+      </div>
     </p-card>
   </div>
 
-  <h2 class="text-2xl font-bold mt-5 mb-3">Media</h2>
-  <p *ngIf="media.length === 0">No photos or videos yet.</p>
+  <!-- Add Photo Section -->
+  <div class="mt-6 mb-4">
+    <button
+      pButton
+      type="button"
+      [label]="showUploadForm ? 'Cancel Upload' : 'Upload Photo'"
+      icon="pi pi-camera"
+      (click)="toggleUploadForm()"
+      [disabled]="!isUserLoggedIn()"
+      [class.p-button-secondary]="showUploadForm"
+    ></button>
+  </div>
+
+  <!-- Upload Form -->
+  <div
+    *ngIf="showUploadForm && isUserLoggedIn()"
+    class="upload-form mb-5 p-4 border-1 surface-border border-round"
+  >
+    <h3 class="text-xl font-bold mb-3">Upload Photo</h3>
+
+    <div class="mb-3">
+      <label for="fileInput" class="block mb-2">Select Image</label>
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        class="w-full border-1 border-round p-2"
+      />
+      <small class="text-gray-500" *ngIf="selectedFile">{{
+        selectedFile.name
+      }}</small>
+    </div>
+
+    <div class="mb-3">
+      <label for="photoCaption" class="block mb-2">Caption</label>
+      <input
+        id="photoCaption"
+        type="text"
+        [(ngModel)]="caption"
+        placeholder="Add a caption (optional)..."
+        class="w-full border-1 border-round p-2"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <button
+        pButton
+        type="button"
+        label="Upload Photo"
+        icon="pi pi-upload"
+        (click)="uploadPhoto()"
+        [loading]="uploading"
+        [disabled]="!selectedFile"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        (click)="resetUploadForm()"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Media Gallery Section -->
+  <h2 class="text-2xl font-bold mt-6 mb-3">Media</h2>
+  <p *ngIf="media.length === 0" class="text-gray-500">
+    No photos or videos yet. Be the first to upload!
+  </p>
   <div class="grid">
-    <div *ngFor="let item of media" class="col-12 md:col-4">
-      <img *ngIf="item.type === 'image'" [src]="item.url" [alt]="item.caption" class="w-full border-round" />
-      <video *ngIf="item.type === 'video'" [src]="item.url" controls class="w-full border-round"></video>
-      <p *ngIf="item.caption" class="mt-1">{{ item.caption }}</p>
+    <div *ngFor="let item of media" class="col-12 md:col-6 lg:col-4">
+      <p-card>
+        <img
+          *ngIf="item.type === 'image'"
+          [src]="item.url"
+          [alt]="item.caption"
+          class="w-full border-round mb-2"
+        />
+        <video
+          *ngIf="item.type === 'video'"
+          [src]="item.url"
+          controls
+          class="w-full border-round mb-2"
+        ></video>
+        <div class="flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <p *ngIf="item.caption" class="mb-1 font-semibold">
+              {{ item.caption }}
+            </p>
+            <small class="text-gray-500"
+              >Uploaded by {{ item.uploadedBy }}</small
+            >
+            <br />
+            <small class="text-gray-400">{{
+              item.createdAt | date: "short"
+            }}</small>
+          </div>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger p-button-text"
+            (click)="deleteMedia(item._id)"
+          ></button>
+        </div>
+      </p-card>
     </div>
   </div>
 </div>
