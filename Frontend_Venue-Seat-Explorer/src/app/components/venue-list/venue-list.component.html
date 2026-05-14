@@ -1,6 +1,28 @@
 <div class="p-4">
   <h1 class="text-3xl font-bold mb-4">Venues</h1>
 
+  <div class="flex gap-2 mb-4">
+    <span class="p-input-icon-left flex-grow-1">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch()"
+        placeholder="Search venues by name, city, or country..."
+        class="w-full"
+      />
+    </span>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-times"
+      class="p-button-secondary"
+      (click)="clearSearch()"
+      *ngIf="searchQuery"
+    ></button>
+  </div>
+
   <p-progressSpinner *ngIf="loading"></p-progressSpinner>
 
   <p *ngIf="!loading && venues.length === 0">No venues found.</p>

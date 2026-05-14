@@ -1,68 +1,332 @@
+<div *ngIf="reviews.length > 0" class="grid mb-5">
+  <div class="col-12 md:col-3">
+    <p-card>
+      <div class="text-center">
+        <p class="text-4xl font-bold text-primary mb-1">
+          {{ reviews.length }}
+        </p>
+        <p class="text-sm text-gray-500">Total Reviews</p>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-3">
+    <p-card>
+      <div class="text-center">
+        <i class="pi pi-eye text-2xl text-blue-500 mb-1"></i>
+        <p class="text-2xl font-bold">{{ getAverageRating('ratingView') }}/5</p>
+        <p class="text-sm text-gray-500">Avg View</p>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-3">
+    <p-card>
+      <div class="text-center">
+        <i class="pi pi-heart text-2xl text-red-500 mb-1"></i>
+        <p class="text-2xl font-bold">
+          {{ getAverageRating('ratingComfort') }}/5
+        </p>
+        <p class="text-sm text-gray-500">Avg Comfort</p>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-3">
+    <p-card>
+      <div class="text-center">
+        <i class="pi pi-volume-up text-2xl text-green-500 mb-1"></i>
+        <p class="text-2xl font-bold">
+          {{ getAverageRating('ratingSound') }}/5
+        </p>
+        <p class="text-sm text-gray-500">Avg Sound</p>
+      </div>
+    </p-card>
+  </div>
+</div>
+
 <p-tabView [(activeIndex)]="activeTab">
-  <p-tabPanel header="Reviews">
-    <!-- Review Form -->
-    <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()">
-      <label for="seat">Select Seat:</label>
-      <select id="seat" formControlName="seatId">
-        <option *ngFor="let seat of seats" [value]="seat._id">
-          {{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}
-        </option>
-      </select>
+  <p-tabPanel header="Reviews" leftIcon="pi pi-star">
+    <div class="flex justify-content-between align-items-center mb-4">
+      <h3 class="text-xl font-bold m-0">
+        Reviews
+        <span
+          class="text-gray-400 text-base font-normal"
+          *ngIf="reviews.length > 0"
+        >
+          ({{ reviews.length }})
+        </span>
+      </h3>
+      <button
+        pButton
+        type="button"
+        [label]="showReviewForm ? 'Cancel' : 'Write a Review'"
+        [icon]="showReviewForm ? 'pi pi-times' : 'pi pi-pencil'"
+        (click)="toggleReviewForm()"
+        [disabled]="!isLoggedIn()"
+        [class]="showReviewForm ? 'p-button-secondary' : 'p-button-primary'"
+      ></button>
+    </div>
 
-      <label for="ratingView">View Rating:</label>
-      <input type="number" id="ratingView" formControlName="ratingView" />
+    <p-card *ngIf="showReviewForm && isLoggedIn()" class="mb-4">
+      <ng-template pTemplate="header">
+        <div class="p-3 pb-0">
+          <h4 class="text-lg font-bold m-0">Write a Review</h4>
+        </div>
+      </ng-template>
 
-      <label for="ratingComfort">Comfort Rating:</label>
-      <input type="number" id="ratingComfort" formControlName="ratingComfort" />
+      <form [formGroup]="reviewForm">
+        <div class="mb-4">
+          <label class="block font-semibold mb-2">Select Seat</label>
+          <p-dropdown
+            [options]="seats"
+            formControlName="seatId"
+            optionLabel="seatNumber"
+            optionValue="_id"
+            placeholder="Choose a seat"
+            class="w-full"
+          >
+            <ng-template let-seat pTemplate="item">
+              {{ getSeatLabel(seat) }}
+            </ng-template>
+            <ng-template let-seat pTemplate="selectedItem">
+              {{ getSeatLabel(seat) }}
+            </ng-template>
+          </p-dropdown>
+        </div>
 
-      <label for="comment">Comment:</label>
-      <textarea id="comment" formControlName="comment"></textarea>
+        <div class="grid mb-4">
+          <div class="col-12 md:col-4">
+            <div class="text-center p-3 border-round surface-ground">
+              <i class="pi pi-eye text-2xl text-blue-500 mb-2"></i>
+              <p class="font-semibold mb-2">View Quality</p>
+              <p-rating
+                formControlName="ratingView"
+                [cancel]="false"
+              ></p-rating>
+            </div>
+          </div>
+          <div class="col-12 md:col-4">
+            <div class="text-center p-3 border-round surface-ground">
+              <i class="pi pi-heart text-2xl text-red-500 mb-2"></i>
+              <p class="font-semibold mb-2">Comfort</p>
+              <p-rating
+                formControlName="ratingComfort"
+                [cancel]="false"
+              ></p-rating>
+            </div>
+          </div>
+          <div class="col-12 md:col-4">
+            <div class="text-center p-3 border-round surface-ground">
+              <i class="pi pi-volume-up text-2xl text-green-500 mb-2"></i>
+              <p class="font-semibold mb-2">Sound</p>
+              <p-rating
+                formControlName="ratingSound"
+                [cancel]="false"
+              ></p-rating>
+            </div>
+          </div>
+        </div>
 
-      <label for="photos">Upload Photos:</label>
-      <input type="file" id="photos" (change)="onUpload($event)" multiple />
+        <div class="mb-4">
+          <label class="block font-semibold mb-2">Your Comment</label>
+          <textarea
+            pInputTextarea
+            formControlName="comment"
+            placeholder="Share your experience (at least 10 characters)..."
+            rows="4"
+            class="w-full"
+          ></textarea>
+          <small
+            class="text-red-500"
+            *ngIf="
+              reviewForm.get('comment')?.touched &&
+              reviewForm.get('comment')?.invalid
+            "
+          >
+            Comment is required (minimum 10 characters).
+          </small>
+        </div>
+      </form>
 
-      <button type="submit" [disabled]="reviewForm.invalid">
-        Submit Review
-      </button>
-    </form>
+      <p-message
+        *ngIf="reviewError"
+        severity="error"
+        [text]="reviewError"
+        class="mb-3 block"
+      ></p-message>
 
-    <!-- List of Reviews -->
-    <div *ngFor="let review of reviews">
-      <p><strong>Seat:</strong> {{ review.seatId }}</p>
-      <p><strong>View Rating:</strong> {{ review.ratingView }}</p>
-      <p><strong>Comfort Rating:</strong> {{ review.ratingComfort }}</p>
-      <p><strong>Comment:</strong> {{ review.comment }}</p>
+      <div class="flex gap-2">
+        <button
+          pButton
+          type="button"
+          label="Submit Review"
+          icon="pi pi-check"
+          (click)="onSubmitReview()"
+          [loading]="loading"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="toggleReviewForm()"
+        ></button>
+      </div>
+    </p-card>
+
+    <p
+      *ngIf="reviews.length === 0"
+      class="text-gray-500 p-4 text-center surface-ground border-round"
+    >
+      No reviews yet. Be the first to share your experience!
+    </p>
+
+    <div *ngFor="let review of reviews" class="mb-3">
+      <p-card>
+        <div class="flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <div class="flex gap-4 mb-2 flex-wrap">
+              <span class="flex align-items-center gap-1">
+                <i class="pi pi-eye text-blue-500"></i>
+                <span class="font-semibold">{{ review.ratingView }}/5</span>
+              </span>
+              <span class="flex align-items-center gap-1">
+                <i class="pi pi-heart text-red-500"></i>
+                <span class="font-semibold">{{ review.ratingComfort }}/5</span>
+              </span>
+              <span
+                *ngIf="review.ratingSound"
+                class="flex align-items-center gap-1"
+              >
+                <i class="pi pi-volume-up text-green-500"></i>
+                <span class="font-semibold">{{ review.ratingSound }}/5</span>
+              </span>
+            </div>
+
+            <p
+              *ngIf="review.censoredComment?.censored"
+              class="text-gray-700 line-height-3 mb-2"
+            >
+              {{ review.censoredComment.censored }}
+            </p>
+            <p
+              *ngIf="!review.censoredComment?.censored && review.comment"
+              class="text-gray-700 line-height-3 mb-2"
+            >
+              {{ review.comment }}
+            </p>
+
+            <div class="flex gap-3 align-items-center flex-wrap">
+              <small class="text-gray-500" *ngIf="review.userId?.username">
+                By {{ review.userId.username }}
+              </small>
+              <small class="text-gray-500" *ngIf="getReviewSeatLabel(review)">
+                {{ getReviewSeatLabel(review) }}
+              </small>
+              <small class="text-gray-400" *ngIf="review.createdAt">
+                {{ review.createdAt | date: 'mediumDate' }}
+              </small>
+              <p-tag
+                *ngIf="review.isFlagged"
+                value="Flagged"
+                severity="warning"
+              ></p-tag>
+            </div>
+          </div>
+
+          <div class="flex gap-1 ml-2">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-flag"
+              class="p-button-rounded p-button-warning p-button-text"
+              (click)="flagReview(review._id)"
+              *ngIf="isLoggedIn() && !review.isFlagged"
+              pTooltip="Flag review"
+            ></button>
+          </div>
+        </div>
+      </p-card>
     </div>
   </p-tabPanel>
 
-  <p-tabPanel header="Photo Gallery">
-    <h3>Photo Gallery</h3>
-    <label for="filterSeat">Filter by Seat:</label>
-    <select
-      id="filterSeat"
-      [(ngModel)]="filter.seatId"
-      (change)="applyFilters()"
+  <p-tabPanel header="Photo Gallery" leftIcon="pi pi-images">
+    <div class="flex justify-content-between align-items-center mb-4">
+      <h3 class="text-xl font-bold m-0">
+        Photos
+        <span
+          class="text-gray-400 text-base font-normal"
+          *ngIf="filteredPhotos.length > 0"
+        >
+          ({{ filteredPhotos.length }})
+        </span>
+      </h3>
+
+      <p-dropdown
+        [options]="seats"
+        [(ngModel)]="filterSeatId"
+        (ngModelChange)="applyFilters()"
+        optionValue="_id"
+        placeholder="All Seats"
+        [showClear]="true"
+        class="w-auto"
+      >
+        <ng-template let-seat pTemplate="item">
+          {{ getSeatLabel(seat) }}
+        </ng-template>
+        <ng-template let-seat pTemplate="selectedItem">
+          {{ getSeatLabel(seat) }}
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <p
+      *ngIf="filteredPhotos.length === 0"
+      class="text-gray-500 p-4 text-center surface-ground border-round"
     >
-      <option value="">All Seats</option>
-      <option *ngFor="let seat of seats" [value]="seat._id">
-        {{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}
-      </option>
-    </select>
+      No photos yet. Visit a seat page to upload photos!
+    </p>
 
-    <label for="filterDate">Filter by Date:</label>
-    <input
-      type="date"
-      id="filterDate"
-      [(ngModel)]="filter.date"
-      (change)="applyFilters()"
-    />
-
-    <div class="gallery">
-      <img
+    <div class="grid">
+      <div
         *ngFor="let photo of filteredPhotos"
-        [src]="photo.url"
-        [alt]="photo.description"
-      />
+        class="col-12 md:col-6 lg:col-4"
+      >
+        <p-card>
+          <img
+            *ngIf="photo.type === 'image'"
+            [src]="photo.url"
+            [alt]="photo.caption || 'Seat photo'"
+            class="w-full border-round mb-2"
+          />
+          <video
+            *ngIf="photo.type === 'video'"
+            [src]="photo.url"
+            controls
+            class="w-full border-round mb-2"
+          ></video>
+          <div>
+            <p *ngIf="photo.caption" class="font-semibold mb-1">
+              {{ photo.caption }}
+            </p>
+            <div class="flex gap-3 align-items-center flex-wrap">
+              <small class="text-gray-500" *ngIf="getPhotoSeatLabel(photo)">
+                {{ getPhotoSeatLabel(photo) }}
+              </small>
+              <small class="text-gray-500" *ngIf="photo.userId?.username">
+                By {{ photo.userId.username }}
+              </small>
+              <small class="text-gray-400">
+                {{ photo.createdAt | date: 'mediumDate' }}
+              </small>
+            </div>
+            <div class="flex gap-2 mt-2" *ngIf="photo.helpfulCount">
+              <small class="text-gray-500">
+                {{ photo.helpfulCount }} found this helpful
+              </small>
+            </div>
+          </div>
+        </p-card>
+      </div>
     </div>
   </p-tabPanel>
 </p-tabView>

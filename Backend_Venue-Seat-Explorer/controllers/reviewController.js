@@ -36,7 +36,8 @@ exports.createReview = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { seatId, venueId, ratingView, ratingComfort, comment } = req.body;
+    const { seatId, venueId, ratingView, ratingComfort, ratingSound, comment } =
+      req.body;
 
     if (!seatId || !venueId) {
       return res
@@ -48,14 +49,17 @@ exports.createReview = async (req, res) => {
       return res.status(400).json({ message: "Ratings are required" });
     }
 
-    const review = await Review.create({
+    const reviewData = {
       seatId,
       venueId,
       userId: user._id,
       ratingView,
       ratingComfort,
       comment,
-    });
+    };
+    if (ratingSound) reviewData.ratingSound = ratingSound;
+
+    const review = await Review.create(reviewData);
 
     await review.populate("userId", "username firstName lastName");
     res.status(201).json(review);
