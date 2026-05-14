@@ -1,0 +1,146 @@
+<div class="admin-dashboard">
+  <div class="mb-6">
+    <h3 class="text-2xl font-bold mb-4">Admin Dashboard</h3>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <p-card *ngFor="let stat of stats">
+        <ng-template pTemplate="header">
+          <h5 class="font-semibold">{{ stat.venue.name }}</h5>
+        </ng-template>
+        <div class="space-y-2">
+          <p>
+            📋 Reviews: <strong>{{ stat.reviews }}</strong>
+          </p>
+          <p class="text-red-600" *ngIf="stat.flaggedReviews > 0">
+            ⚠️ Flagged Reviews: <strong>{{ stat.flaggedReviews }}</strong>
+          </p>
+          <p>
+            📷 Photos: <strong>{{ stat.photos }}</strong>
+          </p>
+          <p class="text-red-600" *ngIf="stat.flaggedPhotos > 0">
+            ⚠️ Flagged Photos: <strong>{{ stat.flaggedPhotos }}</strong>
+          </p>
+          <p>
+            🪑 Seats: <strong>{{ stat.seats }}</strong>
+          </p>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <p-tabView>
+    <!-- Flagged Reviews -->
+    <p-tabPanel header="Flagged Reviews" leftIcon="pi pi-flag">
+      <p-table [value]="flaggedReviews" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Comment</th>
+            <th>Reason</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-review>
+          <tr>
+            <td>{{ review.comment }}</td>
+            <td>
+              <p-tag [value]="review.flagReason" severity="warning"></p-tag>
+            </td>
+            <td>{{ review.createdAt | date }}</td>
+            <td>
+              <button
+                pButton
+                type="button"
+                label="Censor"
+                icon="pi pi-ban"
+                class="p-button-sm p-button-warning mr-2"
+                (click)="censorReview(review._id, review.flagReason)"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Delete"
+                icon="pi pi-trash"
+                class="p-button-sm p-button-danger"
+                (click)="deleteReview(review._id)"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4" class="text-center text-gray-500">
+              No flagged reviews
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
+    <!-- Flagged Photos -->
+    <p-tabPanel header="Flagged Photos" leftIcon="pi pi-images">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div
+          *ngFor="let photo of flaggedPhotos"
+          class="relative group border rounded-lg overflow-hidden"
+        >
+          <img [src]="photo.url" class="w-full h-40 object-cover" />
+          <div
+            class="absolute inset-0 bg-black bg-opacity-75 group-hover:bg-opacity-50 transition-all flex flex-col justify-between p-2"
+          >
+            <p class="text-xs text-white">{{ photo.flagReason }}</p>
+            <div class="flex gap-2">
+              <button
+                pButton
+                type="button"
+                label="Delete"
+                icon="pi pi-trash"
+                class="p-button-sm p-button-danger w-full"
+                (click)="deleteMedia(photo)"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="flaggedPhotos.length === 0"
+        class="text-center text-gray-500 py-6"
+      >
+        No flagged photos
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+
+  <div *ngIf="isAdmin">
+    <h3>Manage Seats</h3>
+    <form (ngSubmit)="onAddSeat()">
+      <input
+        type="text"
+        placeholder="Section"
+        [(ngModel)]="newSeat.section"
+        name="section"
+        required
+      />
+      <input
+        type="text"
+        placeholder="Row"
+        [(ngModel)]="newSeat.row"
+        name="row"
+        required
+      />
+      <input
+        type="text"
+        placeholder="Seat Number"
+        [(ngModel)]="newSeat.seatNumber"
+        name="seatNumber"
+        required
+      />
+      <button type="submit">Add Seat</button>
+    </form>
+
+    <ul>
+      <li *ngFor="let seat of seats">
+        {{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}
+      </li>
+    </ul>
+  </div>
+</div>

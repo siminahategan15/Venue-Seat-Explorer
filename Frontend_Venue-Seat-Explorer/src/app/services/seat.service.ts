@@ -21,7 +21,15 @@ export class SeatService {
   }
 
   createSeat(seat: Partial<Seat>): Observable<Seat> {
-    return this.http.post<Seat>(this.apiUrl, seat);
+    const payload = {
+      venueId: seat.venueId,
+      sectionId: seat.sectionId,
+      row: seat.row,
+      seatNumber: seat.seatNumber,
+      x: seat.x,
+      y: seat.y,
+    };
+    return this.http.post<Seat>(`${this.apiUrl}`, payload);
   }
 
   updateSeat(id: string, seat: Partial<Seat>): Observable<Seat> {

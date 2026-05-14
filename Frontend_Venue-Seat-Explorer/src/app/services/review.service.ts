@@ -16,6 +16,10 @@ export class ReviewService {
     return this.http.get<Review[]>(`${this.apiUrl}/seat/${seatId}`);
   }
 
+  getReviewsByVenue(venueId: string): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.apiUrl}/venue/${venueId}`);
+  }
+
   createReview(review: Partial<Review>): Observable<Review> {
     return this.http.post<Review>(this.apiUrl, review);
   }
@@ -26,5 +30,17 @@ export class ReviewService {
 
   deleteReview(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  flagReview(reviewId: string, reason: string) {
+    return this.http.post(`${this.apiUrl}/${reviewId}/flag`, { reason });
+  }
+
+  censorReview(reviewId: string, data: any) {
+    return this.http.post(`${this.apiUrl}/${reviewId}/censor`, data);
+  }
+
+  getFlaggedReviews(venueId: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/flagged/${venueId}`);
   }
 }

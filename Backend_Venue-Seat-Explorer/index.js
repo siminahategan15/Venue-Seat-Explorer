@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 
+const authRoutes = require("./routes/authRoutes");
 const venueRoutes = require("./routes/venueRoutes");
 const seatRoutes = require("./routes/seatRoutes");
 const mediaRoutes = require("./routes/mediaRoutes");
@@ -22,7 +23,7 @@ app.get("/", (req, res) => {
   res.send("Seat Explorer API running");
 });
 
-// API routes
+app.use("/api/auth", authRoutes);
 app.use("/api/venues", venueRoutes);
 app.use("/api/seats", seatRoutes);
 app.use("/api/media", mediaRoutes);

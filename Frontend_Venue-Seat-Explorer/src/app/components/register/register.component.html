@@ -1,28 +1,205 @@
-<div class="flex justify-content-center p-4">
-  <p-card header="Register" class="w-full md:w-6 lg:w-4">
-    <div class="flex flex-column gap-3">
-      <span class="p-float-label">
-        <input pInputText id="username" [(ngModel)]="username" class="w-full" />
-        <label for="username">Username</label>
-      </span>
-      <span class="p-float-label">
-        <input pInputText id="firstName" [(ngModel)]="firstName" class="w-full" />
-        <label for="firstName">First Name</label>
-      </span>
-      <span class="p-float-label">
-        <input pInputText id="lastName" [(ngModel)]="lastName" class="w-full" />
-        <label for="lastName">Last Name</label>
-      </span>
-      <span class="p-float-label">
-        <input pInputText id="email" [(ngModel)]="email" class="w-full" />
-        <label for="email">Email</label>
-      </span>
-      <span class="p-float-label">
-        <input pInputText id="password" type="password" [(ngModel)]="password" class="w-full" />
-        <label for="password">Password</label>
-      </span>
-      <p-button label="Register" (onClick)="onRegister()" class="w-full"></p-button>
-      <p>Already have an account? <a routerLink="/login">Login</a></p>
+<div class="register-container">
+  <div class="register-box">
+    <h1 class="text-4xl font-bold mb-6 text-center">Venue Seat Explorer</h1>
+    <h2 class="text-2xl font-bold mb-6 text-center">Create Account</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <p-message
+        *ngIf="error"
+        severity="error"
+        [text]="error"
+        class="w-full mb-4"
+      ></p-message>
+
+      <div class="field mb-4">
+        <label for="firstName" class="font-semibold mb-2">First Name</label>
+        <input
+          id="firstName"
+          pInputText
+          type="text"
+          formControlName="firstName"
+          placeholder="Enter your first name"
+          [class.ng-invalid]="f['firstName'].invalid && f['firstName'].touched"
+          class="w-full"
+        />
+        <small
+          class="p-error block mt-1"
+          *ngIf="f['firstName'].touched && f['firstName'].invalid"
+        >
+          {{ getFieldError("firstName") }}
+        </small>
+      </div>
+
+      <div class="field mb-4">
+        <label for="lastName" class="font-semibold mb-2">Last Name</label>
+        <input
+          id="lastName"
+          pInputText
+          type="text"
+          formControlName="lastName"
+          placeholder="Enter your last name"
+          [class.ng-invalid]="f['lastName'].invalid && f['lastName'].touched"
+          class="w-full"
+        />
+        <small
+          class="p-error block mt-1"
+          *ngIf="f['lastName'].touched && f['lastName'].invalid"
+        >
+          {{ getFieldError("lastName") }}
+        </small>
+      </div>
+
+      <div class="field mb-4">
+        <label for="username" class="font-semibold mb-2">Username</label>
+        <input
+          id="username"
+          pInputText
+          type="text"
+          formControlName="username"
+          placeholder="Choose a username"
+          [class.ng-invalid]="f['username'].invalid && f['username'].touched"
+          class="w-full"
+        />
+        <small
+          class="p-error block mt-1"
+          *ngIf="f['username'].touched && f['username'].invalid"
+        >
+          {{ getFieldError("username") }}
+        </small>
+        <small class="p-text-secondary" *ngIf="f['username'].pending">
+          Checking availability...
+        </small>
+      </div>
+
+      <div class="field mb-4">
+        <label for="email" class="font-semibold mb-2">Email</label>
+        <input
+          id="email"
+          pInputText
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.ng-invalid]="f['email'].invalid && f['email'].touched"
+          class="w-full"
+        />
+        <small
+          class="p-error block mt-1"
+          *ngIf="f['email'].touched && f['email'].invalid"
+        >
+          {{ getFieldError("email") }}
+        </small>
+        <small class="p-text-secondary" *ngIf="f['email'].pending">
+          Checking availability...
+        </small>
+      </div>
+
+      <div>
+        <label for="role" class="font-semibold mb-2">Role</label>
+        <p-dropdown
+          id="role"
+          [options]="roles"
+          formControlName="role"
+          placeholder="Select a role"
+          [class.ng-invalid]="f['role'].invalid && f['role'].touched"
+          class="w-full"
+        ></p-dropdown>
+        <small
+          class="p-error block mt-1"
+          *ngIf="f['role'].touched && f['role'].invalid"
+        >
+          {{ getFieldError("role") }}
+        </small>
+      </div>
+
+      <div class="field mb-4">
+        <label for="password" class="font-semibold mb-2">Password</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          placeholder="Enter password"
+          [toggleMask]="true"
+          [class.ng-invalid]="f['password'].invalid && f['password'].touched"
+          styleClass="w-full"
+        ></p-password>
+        <small
+          class="p-error block mt-1"
+          *ngIf="f['password'].touched && f['password'].invalid"
+        >
+          {{ getFieldError("password") }}
+        </small>
+        <ul class="text-sm mt-2 pl-4" *ngIf="f['password'].value">
+          <li
+            [class.text-green-600]="hasMinLength(f['password'].value)"
+            class="text-red-600"
+          >
+            ✓ At least 8 characters
+          </li>
+          <li
+            [class.text-green-600]="hasUpperCase(f['password'].value)"
+            class="text-red-600"
+          >
+            ✓ One uppercase letter
+          </li>
+          <li
+            [class.text-green-600]="hasLowerCase(f['password'].value)"
+            class="text-red-600"
+          >
+            ✓ One lowercase letter
+          </li>
+          <li
+            [class.text-green-600]="hasNumber(f['password'].value)"
+            class="text-red-600"
+          >
+            ✓ One number
+          </li>
+        </ul>
+      </div>
+
+      <div class="field mb-6">
+        <label for="confirmPassword" class="font-semibold mb-2"
+          >Confirm Password</label
+        >
+        <p-password
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="Confirm your password"
+          [toggleMask]="true"
+          [feedback]="false"
+          [class.ng-invalid]="
+            f['confirmPassword'].invalid && f['confirmPassword'].touched
+          "
+          styleClass="w-full"
+        ></p-password>
+        <small
+          class="p-error block mt-1"
+          *ngIf="
+            registerForm.errors?.['passwordMismatch'] &&
+            f['confirmPassword'].touched
+          "
+        >
+          Passwords do not match
+        </small>
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        label="Create Account"
+        class="w-full mb-4"
+        [loading]="loading"
+        [disabled]="registerForm.invalid || loading"
+      ></button>
+    </form>
+
+    <div class="text-center">
+      <p class="text-gray-600">Already have an account?</p>
+      <button
+        pButton
+        type="button"
+        label="Sign in here"
+        class="p-button-text"
+        (click)="goToLogin()"
+      ></button>
     </div>
-  </p-card>
+  </div>
 </div>

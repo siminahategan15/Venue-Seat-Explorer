@@ -1,0 +1,57 @@
+<div class="container mx-auto p-4 max-w-xl">
+	<h2 class="text-2xl font-bold mb-4">Create Venue</h2>
+	<form [formGroup]="venueForm" (ngSubmit)="onSubmit()">
+		<div class="mb-3">
+			<label>Name</label>
+			<input pInputText formControlName="name" class="w-full" />
+			<div *ngIf="venueForm.get('name')?.invalid && venueForm.get('name')?.touched" class="text-red-500">Name is required (min 3 chars)</div>
+		</div>
+		<div class="mb-3">
+			<label>City</label>
+			<input pInputText formControlName="city" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Country</label>
+			<input pInputText formControlName="country" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Capacity</label>
+			<input pInputText type="number" formControlName="capacity" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Description</label>
+			<textarea pInputTextarea formControlName="description" class="w-full"></textarea>
+		</div>
+		<div class="mb-3">
+			<label>Address</label>
+			<input pInputText formControlName="address" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Phone</label>
+			<input pInputText formControlName="phone" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Website</label>
+			<input pInputText formControlName="website" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Categories</label>
+			<p-multiSelect [options]="categories" formControlName="categories" optionLabel="" class="w-full"></p-multiSelect>
+		</div>
+		<div class="mb-3">
+			<label>Amenities</label>
+			<p-multiSelect [options]="amenities" formControlName="amenities" optionLabel="" class="w-full"></p-multiSelect>
+		</div>
+		<div class="mb-3">
+			<label>Latitude</label>
+			<input pInputText formControlName="latitude" class="w-full" />
+		</div>
+		<div class="mb-3">
+			<label>Longitude</label>
+			<input pInputText formControlName="longitude" class="w-full" />
+		</div>
+		<div *ngIf="error" class="text-red-500 mb-2">{{ error }}</div>
+		<button pButton type="submit" label="Create Venue" [disabled]="loading || venueForm.invalid"></button>
+		<p-progressSpinner *ngIf="loading" styleClass="block mx-auto mt-2"></p-progressSpinner>
+	</form>
+</div>

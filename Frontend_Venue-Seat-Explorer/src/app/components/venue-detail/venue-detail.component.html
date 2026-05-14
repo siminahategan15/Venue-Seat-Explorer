@@ -1,31 +1,110 @@
-<p-progressSpinner *ngIf="loading"></p-progressSpinner>
+<div class="venue-detail-container" *ngIf="venue">
+  <div class="venue-header mb-6">
+    <h1 class="text-4xl font-bold">{{ venue.name }}</h1>
+    <div class="venue-meta flex gap-4 mt-2">
+      <span>📍 {{ venue.city }}, {{ venue.country }}</span>
+      <span>👥 Capacity: {{ venue.capacity }}</span>
+    </div>
+  </div>
 
-<div *ngIf="venue" class="p-4">
-  <h1 class="text-3xl font-bold mb-2">{{ venue.name }}</h1>
-  <p>{{ venue.city }}, {{ venue.country }}</p>
-  <p *ngIf="venue.description" class="mt-2">{{ venue.description }}</p>
-  <p class="mt-2">Capacity: {{ venue.capacity }}</p>
+  <!-- Tab Navigation -->
+  <p-tabView [(activeIndex)]="activeTabIndex">
+    <!-- Overview Tab -->
+    <p-tabPanel header="Overview" leftIcon="pi pi-home">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p-card>
+            <ng-template pTemplate="header">
+              <h3 class="font-bold">Description</h3>
+            </ng-template>
+            <p class="text-lg">{{ venue.description }}</p>
+          </p-card>
 
-  <h2 class="text-2xl font-bold mt-5 mb-3">Seats</h2>
+          <p-card class="mt-4" *ngIf="venue.categories?.length">
+            <ng-template pTemplate="header">
+              <h4 class="font-semibold">📋 Categories</h4>
+            </ng-template>
+            <div class="flex gap-2 flex-wrap">
+              <p-tag
+                *ngFor="let cat of venue.categories"
+                [value]="cat"
+                severity="info"
+              ></p-tag>
+            </div>
+          </p-card>
 
-  <p *ngIf="seats.length === 0">No seats available.</p>
+          <p-card class="mt-4" *ngIf="venue.amenities?.length">
+            <ng-template pTemplate="header">
+              <h4 class="font-semibold">🏢 Amenities</h4>
+            </ng-template>
+            <div class="grid grid-cols-2 gap-2">
+              <span
+                *ngFor="let amenity of venue.amenities"
+                class="flex items-center"
+              >
+                ✓ {{ amenity }}
+              </span>
+            </div>
+          </p-card>
 
-  <p-table *ngIf="seats.length > 0" [value]="seats" [paginator]="true" [rows]="10">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Row</th>
-        <th>Seat Number</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-seat>
-      <tr>
-        <td>{{ seat.row }}</td>
-        <td>{{ seat.seatNumber }}</td>
-        <td>
-          <a [routerLink]="['/seats', seat._id]">View Details</a>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+          <div class="mt-6 flex gap-3 flex-wrap">
+            <button
+              pButton
+              type="button"
+              label="Get Directions"
+              icon="pi pi-map"
+              (click)="getDirections()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              label="Call"
+              icon="pi pi-phone"
+              [disabled]="!venue.phone"
+              class="p-button-info"
+              *ngIf="venue.phone"
+            ></button>
+            <button
+              pButton
+              type="button"
+              label="Visit Website"
+              icon="pi pi-external-link"
+              [disabled]="!venue.website"
+              class="p-button-secondary"
+              *ngIf="venue.website"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Google Map -->
+        <div
+          class="map-container rounded-lg overflow-hidden shadow-lg"
+          style="min-height: 400px"
+        >
+          <div #mapContainer style="width: 100%; height: 100%"></div>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <!-- Seats Tab -->
+    <p-tabPanel header="Seats" leftIcon="pi pi-th-large">
+      <app-seat-list [venueId]="venue._id" [isAdmin]="isAdmin"></app-seat-list>
+    </p-tabPanel>
+
+    <!-- Reviews & Photos Tab -->
+    <p-tabPanel header="Reviews & Photos" leftIcon="pi pi-images">
+      <app-reviews-and-media
+        [venueId]="venue._id"
+        [isAdmin]="isAdmin"
+        [currentUserId]="currentUserId"
+      ></app-reviews-and-media>
+    </p-tabPanel>
+
+    <!-- Admin Dashboard Tab -->
+    <p-tabPanel header="Admin Dashboard" leftIcon="pi pi-cog" *ngIf="isAdmin">
+      <app-venue-admin-dashboard
+        [venueId]="venue._id"
+      ></app-venue-admin-dashboard>
+    </p-tabPanel>
+  </p-tabView>
 </div>
