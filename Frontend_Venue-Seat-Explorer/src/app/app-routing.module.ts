@@ -7,6 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './guards/auth-guard.guard';
 import { CreateVenueComponent } from './components/create-venue/create-venue.component';
+import { DirectionsComponent } from './components/directions/directions.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,11 @@ const routes: Routes = [
   {
     path: 'venues/:id',
     component: VenueDetailComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'venues/:id/directions',
+    component: DirectionsComponent,
     canActivate: [AuthGuard],
   },
   {

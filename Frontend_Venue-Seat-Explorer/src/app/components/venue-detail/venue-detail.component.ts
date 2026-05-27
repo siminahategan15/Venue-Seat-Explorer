@@ -1,7 +1,7 @@
 declare var google: any;
 
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { VenueService } from 'src/app/services/venue.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { environment } from 'src/environments/environment';
@@ -22,6 +22,7 @@ export class VenueDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private venueService: VenueService,
     private auth: AuthService,
   ) {}
@@ -80,13 +81,7 @@ export class VenueDetailComponent implements OnInit {
   initMap(): void {
     if (!this.mapContainer || !this.mapCenter) return;
 
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-
-    script.onload = () => {
+    const renderMap = () => {
       const map = new google.maps.Map(this.mapContainer.nativeElement, {
         zoom: 15,
         center: { lat: this.mapCenter.lat, lng: this.mapCenter.lng },
@@ -100,10 +95,31 @@ export class VenueDetailComponent implements OnInit {
         title: this.venue?.name,
       });
     };
+
+    if ((window as any).google && (window as any).google.maps) {
+      renderMap();
+      return;
+    }
+
+    const existing = document.querySelector(
+      'script[data-google-maps-loader="true"]',
+    ) as HTMLScriptElement | null;
+    if (existing) {
+      existing.addEventListener('load', renderMap);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places,geometry`;
+    script.async = true;
+    script.defer = true;
+    script.dataset['googleMapsLoader'] = 'true';
+    script.onload = renderMap;
+    document.head.appendChild(script);
   }
 
   getDirections(): void {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${this.mapCenter.lat},${this.mapCenter.lng}`;
-    window.open(url, '_blank');
+    if (!this.venue) return;
+    this.router.navigate(['/venues', this.venue._id, 'directions']);
   }
 }

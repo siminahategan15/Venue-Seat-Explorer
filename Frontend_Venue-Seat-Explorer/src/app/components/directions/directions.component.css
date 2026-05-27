@@ -1,0 +1,272 @@
+.directions-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px);
+  background: #f8fafc;
+}
+
+.directions-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.header-text h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+}
+
+.header-text .subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.directions-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.directions-sidebar {
+  width: 380px;
+  max-width: 40vw;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.travel-modes {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.mode-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #475569;
+  font-size: 0.75rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mode-btn i {
+  font-size: 1.1rem;
+}
+
+.mode-btn:hover {
+  background: #e2e8f0;
+}
+
+.mode-btn.active {
+  background: #ffffff;
+  color: #1d4ed8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+.endpoint-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot.start {
+  background: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.dot.end {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.endpoint-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.endpoint-input.destination {
+  color: #374151;
+}
+
+.actions-row {
+  display: flex;
+  gap: 8px;
+}
+
+.actions-row > * {
+  flex: 1;
+}
+
+.summary-card {
+  background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.summary-main {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.summary-main .duration {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.summary-main .distance {
+  font-size: 1rem;
+  color: #475569;
+}
+
+.summary-sub {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-sub::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+}
+
+.steps h3 {
+  font-size: 0.95rem;
+  margin: 4px 0 6px;
+  color: #1f2937;
+}
+
+.steps ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.steps li {
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.steps li:last-child {
+  border-bottom: none;
+}
+
+.step-instructions {
+  font-size: 0.9rem;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.step-meta {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: #6b7280;
+  display: flex;
+  gap: 6px;
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.loading-indicator ::ng-deep .small-spinner {
+  width: 22px;
+  height: 22px;
+}
+
+.map-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.directions-map {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 880px) {
+  .directions-body {
+    flex-direction: column-reverse;
+  }
+  .directions-sidebar {
+    width: 100%;
+    max-width: 100%;
+    border-right: none;
+    border-top: 1px solid #e5e7eb;
+    max-height: 50vh;
+  }
+  .map-wrapper {
+    min-height: 50vh;
+  }
+}
