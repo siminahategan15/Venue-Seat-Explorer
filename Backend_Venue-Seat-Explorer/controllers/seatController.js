@@ -1,24 +1,33 @@
 const Seat = require("../models/Seat");
 const Venue = require("../models/Venue");
-
-exports.getSeatsByVenue = async (req, res) => {
-  const seats = await Seat.find({
-    venueId: req.params.venueId,
-  });
-
-  res.json(seats);
-};
+const User = require("../models/User");
 
 exports.getSeatById = async (req, res) => {
-  const seat = await Seat.findById(req.params.id)
-    .populate("venueId")
-    .populate("sectionId");
+  try {
+    const seat = await Seat.findById(req.params.id)
+      .populate("venueId")
+      .populate("sectionId");
 
-  res.json(seat);
+    if (!seat) {
+      return res.status(404).json({ message: "Seat not found" });
+    }
+    res.json(seat);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.createSeat = async (req, res) => {
   try {
+    if (!req.firebaseUser) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = await User.findOne({ firebaseUid: req.firebaseUser.uid });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const { venueId, sectionId, row, seatNumber, x, y } = req.body;
 
     const venue = await Venue.findById(venueId);
@@ -26,12 +35,12 @@ exports.createSeat = async (req, res) => {
       return res.status(404).json({ message: "Venue not found" });
     }
 
-    const userId = req.user?._id;
-    if (venue.adminId.toString() !== userId.toString()) {
+    if (venue.adminId.toString() !== user._id.toString()) {
       return res
         .status(403)
         .json({ message: "Only the venue admin can add seats" });
     }
+
     const seat = await Seat.create({
       venueId,
       sectionId,
@@ -42,8 +51,7 @@ exports.createSeat = async (req, res) => {
     });
     res.status(201).json(seat);
   } catch (error) {
-    console.error("Error creating seat:", error);
-    res.status(500).json({ message: "Failed to create seat" });
+    res.status(500).json({ message: error.message });
   }
 };
 

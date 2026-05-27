@@ -1,4 +1,88 @@
 <div class="seat-list-container">
+  <!-- Sections -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-2xl font-bold">Sections</h3>
+      <button
+        pButton
+        type="button"
+        label="Add Section"
+        icon="pi pi-plus"
+        *ngIf="isAdmin"
+        (click)="showCreateSectionForm = !showCreateSectionForm"
+        class="p-button-outlined"
+      ></button>
+    </div>
+
+    <!-- Create Section Form (admin only) -->
+    <div *ngIf="showCreateSectionForm && isAdmin" class="mb-4">
+      <p-card>
+        <form [formGroup]="createSectionForm" (ngSubmit)="onCreateSection()">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="field">
+              <label>Section Name</label>
+              <input
+                pInputText
+                type="text"
+                formControlName="name"
+                placeholder="e.g. Section A"
+              />
+            </div>
+            <div class="field">
+              <label>Level</label>
+              <p-dropdown
+                [options]="levelOptions"
+                formControlName="level"
+                placeholder="Select level"
+              ></p-dropdown>
+            </div>
+            <div class="field">
+              <label>Total Rows</label>
+              <p-inputNumber
+                formControlName="totalRows"
+                [min]="1"
+                placeholder="Number of rows"
+              ></p-inputNumber>
+            </div>
+          </div>
+          <button
+            pButton
+            type="button"
+            label="Create Section"
+            class="mt-4"
+            [loading]="loading"
+            (click)="onCreateSection()"
+          ></button>
+        </form>
+      </p-card>
+    </div>
+
+    <!-- Section tags (visible to all users) -->
+    <div *ngIf="sections.length > 0" class="mb-4">
+      <div class="flex gap-2 flex-wrap">
+        <p-tag
+          *ngFor="let section of sections"
+          [value]="section.name + ' (' + section.level + ')'"
+          severity="info"
+        >
+          <button
+            *ngIf="isAdmin"
+            pButton
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-danger p-button-text p-button-sm ml-2"
+            (click)="deleteSection(section._id)"
+          ></button>
+        </p-tag>
+      </div>
+    </div>
+
+    <p *ngIf="sections.length === 0" class="text-gray-500">
+      No sections available for this venue.
+    </p>
+  </div>
+
+  <!-- Seats -->
   <div class="flex justify-between items-center mb-6">
     <h3 class="text-2xl font-bold">Available Seats</h3>
     <button
@@ -16,14 +100,14 @@
   <div *ngIf="showCreateForm && isAdmin" class="mb-6">
     <p-card>
       <form [formGroup]="createSeatForm" (ngSubmit)="onCreateSeat()">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="field">
             <label>Seat Number</label>
             <input
               pInputText
               type="text"
               formControlName="seatNumber"
-              placeholder="A1"
+              placeholder="1"
             />
           </div>
           <div class="field">
@@ -32,34 +116,27 @@
               pInputText
               type="text"
               formControlName="row"
-              placeholder="A"
+              placeholder="1"
             />
           </div>
           <div class="field">
             <label>Section</label>
-            <input
-              pInputText
-              type="text"
-              formControlName="section"
-              placeholder="VIP"
-            />
-          </div>
-          <div class="field">
-            <label>Category</label>
-            <input
-              pInputText
-              type="text"
-              formControlName="category"
-              placeholder="Premium"
-            />
+            <p-dropdown
+              [options]="sections"
+              formControlName="sectionId"
+              optionLabel="name"
+              optionValue="_id"
+              placeholder="Select section"
+            ></p-dropdown>
           </div>
         </div>
         <button
           pButton
-          type="submit"
+          type="button"
           label="Create Seat"
           class="mt-4"
           [loading]="loading"
+          (click)="onCreateSeat()"
         ></button>
       </form>
     </p-card>
@@ -75,7 +152,9 @@
     >
       <p class="font-bold text-lg">{{ seat.seatNumber }}</p>
       <p class="text-sm text-gray-600">Row {{ seat.row }}</p>
-      <p class="text-xs text-gray-500 mt-1">{{ seat.section }}</p>
+      <p class="text-xs text-gray-500 mt-1">
+        {{ getSectionName(seat.sectionId?._id || seat.sectionId) }}
+      </p>
       <button
         pButton
         type="button"

@@ -23,4 +23,12 @@ export class SectionService {
   createSection(section: Partial<Section>): Observable<Section> {
     return this.http.post<Section>(this.apiUrl, section);
   }
+
+  updateSection(id: string, section: Partial<Section>): Observable<Section> {
+    return this.http.put<Section>(`${this.apiUrl}/${id}`, section);
+  }
+
+  deleteSection(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

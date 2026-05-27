@@ -28,6 +28,12 @@ const reviewSchema = new mongoose.Schema(
       required: true,
     },
 
+    ratingSound: {
+      type: Number,
+      min: 1,
+      max: 5,
+    },
+
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

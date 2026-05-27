@@ -21,8 +21,10 @@ export class SeatDetailComponent implements OnInit {
   showReviewForm = false;
   ratingView = 5;
   ratingComfort = 5;
+  ratingSound = 5;
   comment = '';
   submittingReview = false;
+  reviewError = '';
 
   showUploadForm = false;
   selectedFile: File | null = null;
@@ -38,12 +40,18 @@ export class SeatDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.seatId || this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadSeat(id);
       this.loadReviews(id);
       this.loadMedia(id);
     }
+  }
+
+  private getVenueId(): string {
+    if (!this.seat) return '';
+    const venueId = this.seat.venueId;
+    return typeof venueId === 'object' ? (venueId as any)._id : venueId;
   }
 
   loadSeat(id: string): void {
@@ -85,8 +93,16 @@ export class SeatDetailComponent implements OnInit {
     return this.auth.currentUser !== null;
   }
 
+  getAverageRating(field: 'ratingView' | 'ratingComfort' | 'ratingSound'): number {
+    const rated = this.reviews.filter((r) => r[field] != null);
+    if (rated.length === 0) return 0;
+    const sum = rated.reduce((acc, r) => acc + (r[field] || 0), 0);
+    return Math.round((sum / rated.length) * 10) / 10;
+  }
+
   toggleReviewForm(): void {
     this.showReviewForm = !this.showReviewForm;
+    this.reviewError = '';
   }
 
   submitReview(): void {
@@ -95,21 +111,27 @@ export class SeatDetailComponent implements OnInit {
     }
 
     this.submittingReview = true;
+    this.reviewError = '';
+
     const review: Partial<Review> = {
       seatId: this.seat._id,
+      venueId: this.getVenueId(),
       ratingView: this.ratingView,
       ratingComfort: this.ratingComfort,
+      ratingSound: this.ratingSound,
       comment: this.comment,
     };
 
     this.reviewService.createReview(review).subscribe({
       next: (newReview) => {
-        this.reviews.push(newReview);
+        this.reviews.unshift(newReview);
         this.resetReviewForm();
         this.submittingReview = false;
       },
       error: (err) => {
         console.error('Error creating review:', err);
+        this.reviewError =
+          err.error?.message || 'Failed to submit review. Please try again.';
         this.submittingReview = false;
       },
     });
@@ -118,8 +140,10 @@ export class SeatDetailComponent implements OnInit {
   resetReviewForm(): void {
     this.ratingView = 5;
     this.ratingComfort = 5;
+    this.ratingSound = 5;
     this.comment = '';
     this.showReviewForm = false;
+    this.reviewError = '';
   }
 
   toggleUploadForm(): void {
@@ -137,10 +161,10 @@ export class SeatDetailComponent implements OnInit {
 
     this.uploading = true;
     this.mediaService
-      .uploadMedia(this.seat._id, this.selectedFile, this.caption)
+      .uploadMedia(this.seat._id, this.selectedFile, this.caption, this.getVenueId())
       .subscribe({
         next: (newMedia) => {
-          this.media.push(newMedia);
+          this.media.unshift(newMedia);
           this.resetUploadForm();
           this.uploading = false;
         },

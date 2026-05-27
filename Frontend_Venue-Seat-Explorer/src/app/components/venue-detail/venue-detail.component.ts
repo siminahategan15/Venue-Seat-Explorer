@@ -60,12 +60,14 @@ export class VenueDetailComponent implements OnInit {
     });
   }
 
-  checkIfAdmin(adminId: string): void {
+  checkIfAdmin(adminId: any): void {
     this.auth.authState$.subscribe((user) => {
       if (user && adminId) {
         this.auth.getCurrentUserMongoDB().subscribe({
           next: (userData) => {
-            this.isAdmin = userData._id === adminId;
+            const adminIdStr =
+              typeof adminId === 'object' ? adminId._id : adminId;
+            this.isAdmin = userData._id === adminIdStr;
           },
           error: () => {
             this.isAdmin = false;

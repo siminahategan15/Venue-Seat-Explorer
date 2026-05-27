@@ -16,11 +16,19 @@ export class MediaService {
     return this.http.get<Media[]>(`${this.apiUrl}/seat/${seatId}`);
   }
 
-  uploadMedia(seatId: string, file: File, caption?: string): Observable<Media> {
+  uploadMedia(
+    seatId: string,
+    file: File,
+    caption?: string,
+    venueId?: string,
+  ): Observable<Media> {
     const formData = new FormData();
     formData.append('image', file);
     if (caption) {
       formData.append('caption', caption);
+    }
+    if (venueId) {
+      formData.append('venueId', venueId);
     }
     return this.http.post<Media>(`${this.apiUrl}/upload/${seatId}`, formData);
   }

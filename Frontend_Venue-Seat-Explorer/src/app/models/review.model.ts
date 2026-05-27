@@ -4,6 +4,7 @@ export interface Review {
   venueId: string;
   ratingView: number;
   ratingComfort: number;
+  ratingSound?: number;
   userId: string;
   comment?: string;
   isFlagged?: boolean;

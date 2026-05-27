@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const controller = require("../controllers/venueController");
 
+router.get("/admin/stats", auth, controller.isAdmin, controller.getVenueAdminStats);
 router.get("/", controller.getAllVenues);
 router.get("/:id", controller.getVenueById);
 router.post("/", auth, controller.isAdmin, controller.createVenue);
