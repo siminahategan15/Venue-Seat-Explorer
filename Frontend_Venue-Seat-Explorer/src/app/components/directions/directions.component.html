@@ -1,0 +1,110 @@
+<div class="directions-page">
+  <header class="directions-header">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-arrow-left"
+      class="p-button-text p-button-rounded"
+      (click)="goBack()"
+      aria-label="Back"
+    ></button>
+    <div class="header-text">
+      <h1 *ngIf="venue">{{ venue.name }}</h1>
+      <span class="subtitle" *ngIf="venue">
+        {{ venue.location?.address || venue.city + ', ' + venue.country }}
+      </span>
+    </div>
+  </header>
+
+  <div class="directions-body">
+    <aside class="directions-sidebar">
+      <div class="travel-modes">
+        <button
+          *ngFor="let mode of travelModes"
+          type="button"
+          class="mode-btn"
+          [class.active]="travelMode === mode.value"
+          (click)="setTravelMode(mode.value)"
+          [attr.aria-label]="mode.label"
+        >
+          <i [class]="mode.icon"></i>
+          <span>{{ mode.label }}</span>
+        </button>
+      </div>
+
+      <div class="endpoint-row">
+        <span class="dot start"></span>
+        <input
+          #originInput
+          type="text"
+          placeholder="Choose starting point"
+          [value]="originLabel"
+          class="endpoint-input"
+        />
+      </div>
+      <div class="endpoint-row">
+        <span class="dot end"></span>
+        <div class="endpoint-input destination">
+          {{ venue?.location?.address || venue?.name || 'Destination' }}
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button
+          pButton
+          type="button"
+          [label]="liveTracking ? 'Live tracking on' : 'Live tracking off'"
+          [icon]="liveTracking ? 'pi pi-circle-fill' : 'pi pi-circle'"
+          class="p-button-sm"
+          [ngClass]="liveTracking ? 'p-button-success' : 'p-button-secondary'"
+          (click)="toggleLiveTracking()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Fit route"
+          icon="pi pi-search-minus"
+          class="p-button-sm p-button-outlined"
+          (click)="recenter()"
+        ></button>
+      </div>
+
+      <div class="summary-card" *ngIf="distanceText || durationText">
+        <div class="summary-main">
+          <div class="duration">{{ durationText }}</div>
+          <div class="distance">{{ distanceText }}</div>
+        </div>
+        <div class="summary-sub" *ngIf="liveTracking && origin">
+          Updates as you move
+        </div>
+      </div>
+
+      <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <div class="steps" *ngIf="steps.length">
+        <h3>Steps</h3>
+        <ol>
+          <li *ngFor="let step of steps">
+            <div class="step-instructions" [innerHTML]="step.instructions"></div>
+            <div class="step-meta">
+              <span>{{ step.distance }}</span>
+              <span *ngIf="step.duration">· {{ step.duration }}</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="loading-indicator" *ngIf="loading && !errorMessage">
+        <p-progressSpinner
+          strokeWidth="3"
+          styleClass="small-spinner"
+        ></p-progressSpinner>
+        <span>Calculating route…</span>
+      </div>
+    </aside>
+
+    <div class="map-wrapper">
+      <div #mapContainer class="directions-map"></div>
+    </div>
+  </div>
+</div>

@@ -34,6 +34,7 @@ import { LocationSearchComponent } from './components/location-search/location-s
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { SeatListComponent } from './components/seat-list/seat-list.component';
 import { ReviewsAndMediaComponent } from './components/reviews-and-media/reviews-and-media.component';
+import { DirectionsComponent } from './components/directions/directions.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
 
@@ -51,6 +52,7 @@ import { DropdownModule } from 'primeng/dropdown';
     LocationSearchComponent,
     SeatListComponent,
     ReviewsAndMediaComponent,
+    DirectionsComponent,
   ],
   imports: [
     BrowserModule,
