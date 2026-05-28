@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SeatService } from 'src/app/services/seat.service';
 import { SectionService } from 'src/app/services/section.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,10 +12,13 @@ import { Section } from 'src/app/models';
 export class SeatListComponent implements OnInit {
   @Input() venueId!: string;
   @Input() isAdmin = false;
+  @ViewChild('seatDetailSection') seatDetailSection!: ElementRef;
 
   seats: any[] = [];
+  filteredSeats: any[] = [];
   sections: Section[] = [];
   selectedSeat: any = null;
+  selectedSectionId: string | null = null;
   showCreateForm = false;
   showCreateSectionForm = false;
   createSeatForm!: FormGroup;
@@ -59,6 +62,7 @@ export class SeatListComponent implements OnInit {
     this.seatService.getSeatsByVenue(this.venueId).subscribe({
       next: (seats) => {
         this.seats = seats;
+        this.applyFilter();
       },
       error: (err) => {
         console.error('Failed to load seats:', err);
@@ -75,6 +79,22 @@ export class SeatListComponent implements OnInit {
         console.error('Failed to load sections:', err);
       },
     });
+  }
+
+  filterBySection(sectionId: string | null): void {
+    this.selectedSectionId = sectionId;
+    this.applyFilter();
+  }
+
+  applyFilter(): void {
+    if (!this.selectedSectionId) {
+      this.filteredSeats = [...this.seats];
+    } else {
+      this.filteredSeats = this.seats.filter((seat) => {
+        const seatSectionId = seat.sectionId?._id || seat.sectionId;
+        return seatSectionId === this.selectedSectionId;
+      });
+    }
   }
 
   getSectionName(sectionId: string): string {
@@ -95,6 +115,7 @@ export class SeatListComponent implements OnInit {
     this.seatService.createSeat(seatData).subscribe({
       next: (seat) => {
         this.seats.push(seat);
+        this.applyFilter();
         this.createSeatForm.reset();
         this.showCreateForm = false;
         this.loading = false;
@@ -135,6 +156,9 @@ export class SeatListComponent implements OnInit {
       this.sectionService.deleteSection(sectionId).subscribe({
         next: () => {
           this.sections = this.sections.filter((s) => s._id !== sectionId);
+          if (this.selectedSectionId === sectionId) {
+            this.selectedSectionId = null;
+          }
           this.loadSeats();
         },
         error: (err) => {
@@ -149,6 +173,7 @@ export class SeatListComponent implements OnInit {
       this.seatService.deleteSeat(seatId).subscribe({
         next: () => {
           this.seats = this.seats.filter((s) => s._id !== seatId);
+          this.applyFilter();
         },
         error: (err) => {
           console.error('Failed to delete seat:', err);
@@ -159,5 +184,10 @@ export class SeatListComponent implements OnInit {
 
   selectSeat(seat: any): void {
     this.selectedSeat = seat;
+    setTimeout(() => {
+      if (this.seatDetailSection) {
+        this.seatDetailSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   }
 }
