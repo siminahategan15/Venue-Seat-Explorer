@@ -1,57 +1,142 @@
-<div class="container mx-auto p-4 max-w-xl">
-	<h2 class="text-2xl font-bold mb-4">Create Venue</h2>
-	<form [formGroup]="venueForm" (ngSubmit)="onSubmit()">
-		<div class="mb-3">
-			<label>Name</label>
-			<input pInputText formControlName="name" class="w-full" />
-			<div *ngIf="venueForm.get('name')?.invalid && venueForm.get('name')?.touched" class="text-red-500">Name is required (min 3 chars)</div>
-		</div>
-		<div class="mb-3">
-			<label>City</label>
-			<input pInputText formControlName="city" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Country</label>
-			<input pInputText formControlName="country" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Capacity</label>
-			<input pInputText type="number" formControlName="capacity" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Description</label>
-			<textarea pInputTextarea formControlName="description" class="w-full"></textarea>
-		</div>
-		<div class="mb-3">
-			<label>Address</label>
-			<input pInputText formControlName="address" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Phone</label>
-			<input pInputText formControlName="phone" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Website</label>
-			<input pInputText formControlName="website" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Categories</label>
-			<p-multiSelect [options]="categories" formControlName="categories" optionLabel="" class="w-full"></p-multiSelect>
-		</div>
-		<div class="mb-3">
-			<label>Amenities</label>
-			<p-multiSelect [options]="amenities" formControlName="amenities" optionLabel="" class="w-full"></p-multiSelect>
-		</div>
-		<div class="mb-3">
-			<label>Latitude</label>
-			<input pInputText formControlName="latitude" class="w-full" />
-		</div>
-		<div class="mb-3">
-			<label>Longitude</label>
-			<input pInputText formControlName="longitude" class="w-full" />
-		</div>
-		<div *ngIf="error" class="text-red-500 mb-2">{{ error }}</div>
-		<button pButton type="submit" label="Create Venue" [disabled]="loading || venueForm.invalid"></button>
-		<p-progressSpinner *ngIf="loading" styleClass="block mx-auto mt-2"></p-progressSpinner>
-	</form>
+<div class="flex justify-content-center p-4">
+  <div class="w-full lg:w-8 xl:w-6">
+    <div class="mb-3">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-arrow-left"
+        label="Back to Venues"
+        class="p-button-text"
+        routerLink="/"
+      ></button>
+    </div>
+
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="p-4 pb-0">
+          <h2 class="text-2xl font-bold mt-0 mb-1">Create Venue</h2>
+          <p class="text-color-secondary mt-0 mb-0">Fill in the details to add a new venue</p>
+        </div>
+      </ng-template>
+
+      <form [formGroup]="venueForm" (ngSubmit)="onSubmit()">
+        <h4 class="text-lg font-semibold mb-3 mt-0 flex align-items-center gap-2">
+          <i class="pi pi-info-circle text-primary"></i> Basic Info
+        </h4>
+
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="field mb-3">
+              <label>Name *</label>
+              <input pInputText formControlName="name" class="w-full" placeholder="Venue name" />
+              <small *ngIf="venueForm.get('name')?.invalid && venueForm.get('name')?.touched" class="p-error block mt-1">
+                Name is required (min 3 chars)
+              </small>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="field mb-3">
+              <label>Capacity *</label>
+              <input pInputText type="number" formControlName="capacity" class="w-full" placeholder="Total capacity" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field mb-3">
+          <label>Description *</label>
+          <textarea pInputTextarea formControlName="description" class="w-full" rows="3" placeholder="Describe this venue..."></textarea>
+        </div>
+
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="field mb-3">
+              <label>Categories</label>
+              <p-multiSelect [options]="categories" formControlName="categories" optionLabel="" styleClass="w-full" placeholder="Select categories"></p-multiSelect>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="field mb-3">
+              <label>Amenities</label>
+              <p-multiSelect [options]="amenities" formControlName="amenities" optionLabel="" styleClass="w-full" placeholder="Select amenities"></p-multiSelect>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="text-lg font-semibold mb-3 mt-4 flex align-items-center gap-2 border-top-1 surface-border pt-4">
+          <i class="pi pi-map-marker text-primary"></i> Location
+        </h4>
+
+        <div class="field mb-3">
+          <label>Address *</label>
+          <input pInputText formControlName="address" class="w-full" placeholder="Full address" />
+        </div>
+
+        <div class="grid">
+          <div class="col-12 md:col-4">
+            <div class="field mb-3">
+              <label>City *</label>
+              <input pInputText formControlName="city" class="w-full" placeholder="City" />
+            </div>
+          </div>
+          <div class="col-12 md:col-4">
+            <div class="field mb-3">
+              <label>Country *</label>
+              <input pInputText formControlName="country" class="w-full" placeholder="Country" />
+            </div>
+          </div>
+          <div class="col-12 md:col-2">
+            <div class="field mb-3">
+              <label>Latitude *</label>
+              <input pInputText formControlName="latitude" class="w-full" placeholder="40.7128" />
+            </div>
+          </div>
+          <div class="col-12 md:col-2">
+            <div class="field mb-3">
+              <label>Longitude *</label>
+              <input pInputText formControlName="longitude" class="w-full" placeholder="-74.0060" />
+            </div>
+          </div>
+        </div>
+
+        <h4 class="text-lg font-semibold mb-3 mt-4 flex align-items-center gap-2 border-top-1 surface-border pt-4">
+          <i class="pi pi-phone text-primary"></i> Contact
+        </h4>
+
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="field mb-3">
+              <label>Phone</label>
+              <input pInputText formControlName="phone" class="w-full" placeholder="Phone number" />
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="field mb-3">
+              <label>Website</label>
+              <input pInputText formControlName="website" class="w-full" placeholder="https://..." />
+            </div>
+          </div>
+        </div>
+
+        <p-message *ngIf="error" severity="error" [text]="error" class="w-full mb-3"></p-message>
+
+        <div class="flex gap-3 align-items-center mt-4 border-top-1 surface-border pt-4">
+          <button
+            pButton
+            type="submit"
+            label="Create Venue"
+            icon="pi pi-check"
+            [disabled]="loading || venueForm.invalid"
+            [loading]="loading"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Cancel"
+            class="p-button-outlined"
+            routerLink="/"
+          ></button>
+        </div>
+      </form>
+    </p-card>
+  </div>
 </div>

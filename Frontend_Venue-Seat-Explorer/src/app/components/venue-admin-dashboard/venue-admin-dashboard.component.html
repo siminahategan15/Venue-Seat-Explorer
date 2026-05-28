@@ -1,34 +1,42 @@
-<div class="admin-dashboard">
-  <div class="mb-6">
-    <h3 class="text-2xl font-bold mb-4">Admin Dashboard</h3>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <p-card *ngFor="let stat of stats">
-        <ng-template pTemplate="header">
-          <h5 class="font-semibold">{{ stat.venue.name }}</h5>
-        </ng-template>
-        <div class="space-y-2">
-          <p>
-            📋 Reviews: <strong>{{ stat.reviews }}</strong>
-          </p>
-          <p class="text-red-600" *ngIf="stat.flaggedReviews > 0">
-            ⚠️ Flagged Reviews: <strong>{{ stat.flaggedReviews }}</strong>
-          </p>
-          <p>
-            📷 Photos: <strong>{{ stat.photos }}</strong>
-          </p>
-          <p class="text-red-600" *ngIf="stat.flaggedPhotos > 0">
-            ⚠️ Flagged Photos: <strong>{{ stat.flaggedPhotos }}</strong>
-          </p>
-          <p>
-            🪑 Seats: <strong>{{ stat.seats }}</strong>
-          </p>
-        </div>
-      </p-card>
+<div class="p-2">
+  <div class="mb-5">
+    <h3 class="text-2xl font-bold mb-4 mt-0">Admin Dashboard</h3>
+    <div class="grid">
+      <div *ngFor="let stat of stats" class="col-12 md:col-3">
+        <p-card class="stat-card">
+          <ng-template pTemplate="header">
+            <div class="p-3 pb-0">
+              <h5 class="font-semibold mt-0 mb-0">{{ stat.venue.name }}</h5>
+            </div>
+          </ng-template>
+          <div class="flex flex-column gap-2">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-star text-primary"></i>
+              <span>Reviews: <strong>{{ stat.reviews }}</strong></span>
+            </div>
+            <div class="flex align-items-center gap-2 text-red-600" *ngIf="stat.flaggedReviews > 0">
+              <i class="pi pi-flag"></i>
+              <span>Flagged Reviews: <strong>{{ stat.flaggedReviews }}</strong></span>
+            </div>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-camera text-primary"></i>
+              <span>Photos: <strong>{{ stat.photos }}</strong></span>
+            </div>
+            <div class="flex align-items-center gap-2 text-red-600" *ngIf="stat.flaggedPhotos > 0">
+              <i class="pi pi-flag"></i>
+              <span>Flagged Photos: <strong>{{ stat.flaggedPhotos }}</strong></span>
+            </div>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-ticket text-primary"></i>
+              <span>Seats: <strong>{{ stat.seats }}</strong></span>
+            </div>
+          </div>
+        </p-card>
+      </div>
     </div>
   </div>
 
   <p-tabView>
-    <!-- Flagged Reviews -->
     <p-tabPanel header="Flagged Reviews" leftIcon="pi pi-flag">
       <p-table [value]="flaggedReviews" responsiveLayout="scroll">
         <ng-template pTemplate="header">
@@ -47,28 +55,31 @@
             </td>
             <td>{{ review.createdAt | date }}</td>
             <td>
-              <button
-                pButton
-                type="button"
-                label="Censor"
-                icon="pi pi-ban"
-                class="p-button-sm p-button-warning mr-2"
-                (click)="censorReview(review._id, review.flagReason)"
-              ></button>
-              <button
-                pButton
-                type="button"
-                label="Delete"
-                icon="pi pi-trash"
-                class="p-button-sm p-button-danger"
-                (click)="deleteReview(review._id)"
-              ></button>
+              <div class="flex gap-2">
+                <button
+                  pButton
+                  type="button"
+                  label="Censor"
+                  icon="pi pi-ban"
+                  class="p-button-sm p-button-warning"
+                  (click)="censorReview(review._id, review.flagReason)"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  label="Delete"
+                  icon="pi pi-trash"
+                  class="p-button-sm p-button-danger"
+                  (click)="deleteReview(review._id)"
+                ></button>
+              </div>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="4" class="text-center text-gray-500">
+            <td colspan="4" class="text-center text-color-secondary p-4">
+              <i class="pi pi-check-circle text-green-500 mr-2"></i>
               No flagged reviews
             </td>
           </tr>
@@ -76,19 +87,13 @@
       </p-table>
     </p-tabPanel>
 
-    <!-- Flagged Photos -->
     <p-tabPanel header="Flagged Photos" leftIcon="pi pi-images">
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div
-          *ngFor="let photo of flaggedPhotos"
-          class="relative group border rounded-lg overflow-hidden"
-        >
-          <img [src]="photo.url" class="w-full h-40 object-cover" />
-          <div
-            class="absolute inset-0 bg-black bg-opacity-75 group-hover:bg-opacity-50 transition-all flex flex-col justify-between p-2"
-          >
-            <p class="text-xs text-white">{{ photo.flagReason }}</p>
-            <div class="flex gap-2">
+      <div class="grid">
+        <div *ngFor="let photo of flaggedPhotos" class="col-12 md:col-4 lg:col-3">
+          <p-card>
+            <img [src]="photo.url" class="w-full border-round mb-3" />
+            <p-tag [value]="photo.flagReason" severity="warning" class="mb-2"></p-tag>
+            <div class="mt-2">
               <button
                 pButton
                 type="button"
@@ -98,49 +103,71 @@
                 (click)="deleteMedia(photo)"
               ></button>
             </div>
-          </div>
+          </p-card>
         </div>
       </div>
-      <div
-        *ngIf="flaggedPhotos.length === 0"
-        class="text-center text-gray-500 py-6"
-      >
-        No flagged photos
+      <div *ngIf="flaggedPhotos.length === 0" class="empty-state">
+        <i class="pi pi-check-circle text-green-500"></i>
+        <p class="mt-0">No flagged photos</p>
       </div>
     </p-tabPanel>
   </p-tabView>
 
-  <div *ngIf="isAdmin">
-    <h3>Manage Seats</h3>
-    <form (ngSubmit)="onAddSeat()">
-      <input
-        type="text"
-        placeholder="Section"
-        [(ngModel)]="newSeat.section"
-        name="section"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Row"
-        [(ngModel)]="newSeat.row"
-        name="row"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Seat Number"
-        [(ngModel)]="newSeat.seatNumber"
-        name="seatNumber"
-        required
-      />
-      <button type="submit">Add Seat</button>
-    </form>
+  <!-- Seat Management -->
+  <div *ngIf="isAdmin" class="mt-5">
+    <h3 class="text-xl font-bold mb-3">Manage Seats</h3>
+    <p-card>
+      <form (ngSubmit)="onAddSeat()">
+        <div class="grid">
+          <div class="col-12 md:col-4">
+            <div class="field">
+              <label>Section</label>
+              <input
+                pInputText
+                placeholder="Section"
+                [(ngModel)]="newSeat.section"
+                name="section"
+                required
+                class="w-full"
+              />
+            </div>
+          </div>
+          <div class="col-12 md:col-4">
+            <div class="field">
+              <label>Row</label>
+              <input
+                pInputText
+                placeholder="Row"
+                [(ngModel)]="newSeat.row"
+                name="row"
+                required
+                class="w-full"
+              />
+            </div>
+          </div>
+          <div class="col-12 md:col-4">
+            <div class="field">
+              <label>Seat Number</label>
+              <input
+                pInputText
+                placeholder="Seat Number"
+                [(ngModel)]="newSeat.seatNumber"
+                name="seatNumber"
+                required
+                class="w-full"
+              />
+            </div>
+          </div>
+        </div>
+        <button pButton type="submit" label="Add Seat" icon="pi pi-plus" class="mt-3"></button>
+      </form>
+    </p-card>
 
-    <ul>
-      <li *ngFor="let seat of seats">
-        {{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}
-      </li>
-    </ul>
+    <div *ngIf="seats.length > 0" class="mt-3">
+      <div *ngFor="let seat of seats" class="surface-card border-round p-3 mb-2 flex align-items-center gap-3 border-1 surface-border">
+        <i class="pi pi-ticket text-primary"></i>
+        <span>{{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}</span>
+      </div>
+    </div>
   </div>
 </div>

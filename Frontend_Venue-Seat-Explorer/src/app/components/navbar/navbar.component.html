@@ -1,17 +1,28 @@
 <p-menubar [model]="items">
+  <ng-template pTemplate="start">
+    <span
+      class="font-bold text-xl text-primary cursor-pointer"
+      (click)="navigateHome()"
+    >
+      <i class="pi pi-building mr-2"></i>Venue Seat Explorer
+    </span>
+  </ng-template>
   <ng-template pTemplate="end">
     <div
       *ngIf="auth.authState$ | async as user"
       class="flex align-items-center gap-3"
     >
-      <span class="font-bold">Hello, {{ user.displayName }}</span>
+      <span class="flex align-items-center gap-2">
+        <i class="pi pi-user"></i>
+        <span class="font-semibold">{{ user.displayName }}</span>
+      </span>
 
       <button
         pButton
         type="button"
         label="Logout"
         icon="pi pi-sign-out"
-        class="p-button-text"
+        class="p-button-text p-button-sm"
         (click)="logout()"
       ></button>
     </div>

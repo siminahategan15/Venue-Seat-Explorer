@@ -54,7 +54,7 @@ router.post("/check-availability", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, email, password, firstName, lastName } = req.body;
+    const { username, email, password, firstName, lastName, role } = req.body;
 
     if (!username || !email || !password || !firstName || !lastName) {
       return res.status(400).json({ message: "All fields are required." });
@@ -74,17 +74,14 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Invalid email format." });
     }
 
-    const nameRegex = /^[A-Z][a-z]{2,}$/;
-    if (!nameRegex.test(firstName)) {
+    if (firstName.trim().length < 2) {
       return res.status(400).json({
-        message:
-          "First name must start with uppercase and be longer than 3 letters.",
+        message: "First name must be at least 2 characters.",
       });
     }
-    if (!nameRegex.test(lastName)) {
+    if (lastName.trim().length < 2) {
       return res.status(400).json({
-        message:
-          "Last name must start with uppercase and be longer than 3 letters.",
+        message: "Last name must be at least 2 characters.",
       });
     }
 
@@ -109,8 +106,8 @@ router.post("/register", async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const userCount = await User.countDocuments();
-    const role = userCount === 0 ? "admin" : "user";
+    const validRoles = ["user", "admin"];
+    const assignedRole = validRoles.includes(role) ? role : "user";
 
     const user = await User.create({
       firebaseUid: userRecord.uid,
@@ -119,7 +116,7 @@ router.post("/register", async (req, res) => {
       firstName,
       lastName,
       password: passwordHash,
-      role,
+      role: assignedRole,
     });
 
     return res.status(201).json({

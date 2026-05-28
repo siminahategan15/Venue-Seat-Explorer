@@ -60,6 +60,7 @@ export class AuthService {
     firstName: string,
     lastName: string,
     username: string,
+    role: 'admin' | 'user',
   ) {
     return this.http.post<{ message: string; user: any }>(
       `${environment.apiUrl}/api/auth/register`,
@@ -69,6 +70,7 @@ export class AuthService {
         firstName,
         lastName,
         username,
+        role,
       },
     );
   }

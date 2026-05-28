@@ -1,6 +1,7 @@
 # Node.js (backend)
 Backend_Venue-Seat-Explorer/node_modules/
 Backend_Venue-Seat-Explorer/.env
+Backend_Venue-Seat-Explorer/config/*-adminsdk-*.json
 Backend_Venue-Seat-Explorer/dist/
 
 # Angular (frontend)
