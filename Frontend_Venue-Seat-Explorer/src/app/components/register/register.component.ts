@@ -17,8 +17,8 @@ export class RegisterComponent implements OnInit {
   loading = false;
   error = '';
   roles = [
-    { label: 'User', value: 'user' },
-    { label: 'Admin', value: 'admin' },
+    { label: 'Utilizator', value: 'user' },
+    { label: 'Creator', value: 'admin' },
   ];
 
   constructor(
@@ -43,7 +43,7 @@ export class RegisterComponent implements OnInit {
         lastName: ['', [Validators.required, CustomValidators.properName()]],
         username: [
           '',
-          [Validators.required, Validators.minLength(3)],
+          [Validators.required, Validators.minLength(2)],
           [CustomValidators.usernameAvailability(this.http)],
         ],
         email: [
@@ -93,7 +93,7 @@ export class RegisterComponent implements OnInit {
         return `${this.capitalize(fieldName)} is required`;
       }
       if (field.errors['invalidName']) {
-        return `${this.capitalize(fieldName)} must start with uppercase and be longer than 3 characters`;
+        return `${this.capitalize(fieldName)} must be at least 2 characters`;
       }
       if (field.errors['invalidEmail']) {
         return 'Please enter a valid email format';
@@ -145,6 +145,7 @@ export class RegisterComponent implements OnInit {
           formValue.firstName,
           formValue.lastName,
           formValue.username,
+          formValue.role,
         ),
       );
 

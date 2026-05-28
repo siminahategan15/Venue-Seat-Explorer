@@ -1,8 +1,7 @@
-<div class="seat-list-container">
-  <!-- Sections -->
-  <div class="mb-6">
-    <div class="flex justify-between items-center mb-3">
-      <h3 class="text-2xl font-bold">Sections</h3>
+<div class="p-2">
+  <div class="mb-5">
+    <div class="flex justify-content-between align-items-center mb-3">
+      <h3 class="text-2xl font-bold m-0">Sections</h3>
       <button
         pButton
         type="button"
@@ -14,42 +13,51 @@
       ></button>
     </div>
 
-    <!-- Create Section Form (admin only) -->
     <div *ngIf="showCreateSectionForm && isAdmin" class="mb-4">
       <p-card>
         <form [formGroup]="createSectionForm" (ngSubmit)="onCreateSection()">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="field">
-              <label>Section Name</label>
-              <input
-                pInputText
-                type="text"
-                formControlName="name"
-                placeholder="e.g. Section A"
-              />
+          <div class="grid">
+            <div class="col-12 md:col-4">
+              <div class="field">
+                <label>Section Name</label>
+                <input
+                  pInputText
+                  type="text"
+                  formControlName="name"
+                  placeholder="e.g. Section A"
+                  class="w-full"
+                />
+              </div>
             </div>
-            <div class="field">
-              <label>Level</label>
-              <p-dropdown
-                [options]="levelOptions"
-                formControlName="level"
-                placeholder="Select level"
-              ></p-dropdown>
+            <div class="col-12 md:col-4">
+              <div class="field">
+                <label>Level</label>
+                <p-dropdown
+                  [options]="levelOptions"
+                  formControlName="level"
+                  placeholder="Select level"
+                  class="w-full"
+                ></p-dropdown>
+              </div>
             </div>
-            <div class="field">
-              <label>Total Rows</label>
-              <p-inputNumber
-                formControlName="totalRows"
-                [min]="1"
-                placeholder="Number of rows"
-              ></p-inputNumber>
+            <div class="col-12 md:col-4">
+              <div class="field">
+                <label>Total Rows</label>
+                <p-inputNumber
+                  formControlName="totalRows"
+                  [min]="1"
+                  placeholder="Number of rows"
+                  class="w-full"
+                ></p-inputNumber>
+              </div>
             </div>
           </div>
           <button
             pButton
             type="button"
             label="Create Section"
-            class="mt-4"
+            icon="pi pi-check"
+            class="mt-3"
             [loading]="loading"
             (click)="onCreateSection()"
           ></button>
@@ -77,14 +85,15 @@
       </div>
     </div>
 
-    <p *ngIf="sections.length === 0" class="text-gray-500">
-      No sections available for this venue.
-    </p>
+    <div *ngIf="sections.length === 0" class="empty-state">
+      <i class="pi pi-th-large"></i>
+      <p class="mt-0">No sections available for this venue.</p>
+    </div>
   </div>
 
   <!-- Seats -->
-  <div class="flex justify-between items-center mb-6">
-    <h3 class="text-2xl font-bold">Available Seats</h3>
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h3 class="text-2xl font-bold m-0">Available Seats</h3>
     <button
       pButton
       type="button"
@@ -96,45 +105,54 @@
     ></button>
   </div>
 
-  <!-- Create Seat Form -->
-  <div *ngIf="showCreateForm && isAdmin" class="mb-6">
+  <div *ngIf="showCreateForm && isAdmin" class="mb-5">
     <p-card>
       <form [formGroup]="createSeatForm" (ngSubmit)="onCreateSeat()">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="field">
-            <label>Seat Number</label>
-            <input
-              pInputText
-              type="text"
-              formControlName="seatNumber"
-              placeholder="1"
-            />
+        <div class="grid">
+          <div class="col-12 md:col-4">
+            <div class="field">
+              <label>Seat Number</label>
+              <input
+                pInputText
+                type="text"
+                formControlName="seatNumber"
+                placeholder="1"
+                class="w-full"
+              />
+            </div>
           </div>
-          <div class="field">
-            <label>Row</label>
-            <input
-              pInputText
-              type="text"
-              formControlName="row"
-              placeholder="1"
-            />
+          <div class="col-12 md:col-4">
+            <div class="field">
+              <label>Row</label>
+              <input
+                pInputText
+                type="text"
+                formControlName="row"
+                placeholder="1"
+                class="w-full"
+              />
+            </div>
           </div>
-          <div class="field">
-            <label>Section</label>
-            <p-dropdown
-              [options]="sections"
-              formControlName="sectionId"
-              optionLabel="name"
-              optionValue="_id"
-              placeholder="Select section"
-            ></p-dropdown>
+          <div class="col-12 md:col-4">
+            <div class="field">
+              <label>Section</label>
+              <p-dropdown
+                [options]="sections"
+                formControlName="sectionId"
+                optionLabel="name"
+                optionValue="_id"
+                placeholder="Select section"
+                class="w-full"
+              ></p-dropdown>
+            </div>
           </div>
         </div>
         <button
           pButton
           type="button"
           label="Create Seat"
-          class="mt-4"
+          icon="pi pi-check"
+          class="mt-3"
           [loading]="loading"
           (click)="onCreateSeat()"
         ></button>
@@ -142,35 +160,52 @@
     </p-card>
   </div>
 
-  <!-- Seats Grid -->
-  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-    <div
-      *ngFor="let seat of seats"
-      class="seat-card p-4 border rounded cursor-pointer hover:shadow-lg transition-all"
-      [class.selected]="selectedSeat?._id === seat._id"
-      (click)="selectSeat(seat)"
-    >
-      <p class="font-bold text-lg">{{ seat.seatNumber }}</p>
-      <p class="text-sm text-gray-600">Row {{ seat.row }}</p>
-      <p class="text-xs text-gray-500 mt-1">
-        {{ getSectionName(seat.sectionId?._id || seat.sectionId) }}
-      </p>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-trash"
-        class="p-button-sm p-button-danger mt-2 w-full"
-        *ngIf="isAdmin"
-        (click)="deleteSeat(seat._id)"
-      ></button>
+  <div class="grid">
+    <div *ngFor="let seat of seats" class="col-6 md:col-3 lg:col-2">
+      <div
+        class="seat-card"
+        [class.selected]="selectedSeat?._id === seat._id"
+        (click)="selectSeat(seat)"
+      >
+        <i class="pi pi-ticket text-2xl mb-2 text-primary"></i>
+        <p class="font-bold text-lg mb-1">{{ seat.seatNumber }}</p>
+        <p class="text-sm text-color-secondary mb-1">Row {{ seat.row }}</p>
+        <p class="text-xs text-color-secondary mt-1">
+          {{ getSectionName(seat.sectionId?._id || seat.sectionId) }}
+        </p>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-trash"
+          class="p-button-sm p-button-danger p-button-text mt-2"
+          *ngIf="isAdmin"
+          (click)="deleteSeat(seat._id); $event.stopPropagation()"
+        ></button>
+      </div>
     </div>
   </div>
 
-  <!-- Selected Seat Details -->
-  <div *ngIf="selectedSeat" class="mt-6">
+  <div *ngIf="seats.length === 0 && !loading" class="empty-state mt-4">
+    <i class="pi pi-ticket"></i>
+    <p class="mt-0">No seats added yet.</p>
+  </div>
+
+  <div *ngIf="selectedSeat" class="mt-5">
     <p-card>
       <ng-template pTemplate="header">
-        <h4 class="font-bold">Seat Details: {{ selectedSeat.seatNumber }}</h4>
+        <div class="p-3 pb-0 flex justify-content-between align-items-center">
+          <h4 class="font-bold m-0">
+            <i class="pi pi-ticket mr-2 text-primary"></i>
+            Seat Details: {{ selectedSeat.seatNumber }}
+          </h4>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-times"
+            class="p-button-rounded p-button-text"
+            (click)="selectedSeat = null"
+          ></button>
+        </div>
       </ng-template>
       <app-seat-detail [seatId]="selectedSeat._id"></app-seat-detail>
     </p-card>

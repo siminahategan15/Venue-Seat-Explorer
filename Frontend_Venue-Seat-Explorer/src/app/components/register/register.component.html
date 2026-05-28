@@ -1,78 +1,51 @@
-<div class="register-container">
+<div class="auth-gradient">
   <div class="register-box">
-    <h1 class="text-4xl font-bold mb-6 text-center">Venue Seat Explorer</h1>
-    <h2 class="text-2xl font-bold mb-6 text-center">Create Account</h2>
+    <div class="text-center mb-3">
+      <h1 class="text-3xl font-bold mb-1 mt-0">Create Account</h1>
+      <p class="text-color-secondary mt-0 mb-0">Join Venue Seat Explorer</p>
+    </div>
 
     <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
       <p-message
         *ngIf="error"
         severity="error"
         [text]="error"
-        class="w-full mb-4"
+        class="w-full mb-3"
       ></p-message>
 
-      <div class="field mb-4">
-        <label for="firstName" class="font-semibold mb-2">First Name</label>
-        <input
-          id="firstName"
-          pInputText
-          type="text"
-          formControlName="firstName"
-          placeholder="Enter your first name"
-          [class.ng-invalid]="f['firstName'].invalid && f['firstName'].touched"
-          class="w-full"
-        />
-        <small
-          class="p-error block mt-1"
-          *ngIf="f['firstName'].touched && f['firstName'].invalid"
-        >
-          {{ getFieldError("firstName") }}
-        </small>
+      <div class="grid">
+        <div class="col-12 md:col-6">
+          <div class="field mb-3">
+            <label for="firstName">First Name</label>
+            <input
+              id="firstName"
+              pInputText
+              type="text"
+              formControlName="firstName"
+              placeholder="First name"
+              [class.ng-invalid]="f['firstName'].invalid && f['firstName'].touched"
+              class="w-full"
+            />
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="field mb-3">
+            <label for="lastName">Last Name</label>
+            <input
+              id="lastName"
+              pInputText
+              type="text"
+              formControlName="lastName"
+              placeholder="Last name"
+              [class.ng-invalid]="f['lastName'].invalid && f['lastName'].touched"
+              class="w-full"
+            />
+          </div>
+        </div>
       </div>
 
-      <div class="field mb-4">
-        <label for="lastName" class="font-semibold mb-2">Last Name</label>
-        <input
-          id="lastName"
-          pInputText
-          type="text"
-          formControlName="lastName"
-          placeholder="Enter your last name"
-          [class.ng-invalid]="f['lastName'].invalid && f['lastName'].touched"
-          class="w-full"
-        />
-        <small
-          class="p-error block mt-1"
-          *ngIf="f['lastName'].touched && f['lastName'].invalid"
-        >
-          {{ getFieldError("lastName") }}
-        </small>
-      </div>
-
-      <div class="field mb-4">
-        <label for="username" class="font-semibold mb-2">Username</label>
-        <input
-          id="username"
-          pInputText
-          type="text"
-          formControlName="username"
-          placeholder="Choose a username"
-          [class.ng-invalid]="f['username'].invalid && f['username'].touched"
-          class="w-full"
-        />
-        <small
-          class="p-error block mt-1"
-          *ngIf="f['username'].touched && f['username'].invalid"
-        >
-          {{ getFieldError("username") }}
-        </small>
-        <small class="p-text-secondary" *ngIf="f['username'].pending">
-          Checking availability...
-        </small>
-      </div>
-
-      <div class="field mb-4">
-        <label for="email" class="font-semibold mb-2">Email</label>
+      <div class="field mb-3">
+        <label for="email">Email</label>
         <input
           id="email"
           pInputText
@@ -82,122 +55,124 @@
           [class.ng-invalid]="f['email'].invalid && f['email'].touched"
           class="w-full"
         />
-        <small
-          class="p-error block mt-1"
-          *ngIf="f['email'].touched && f['email'].invalid"
-        >
+        <small class="p-error block mt-1" *ngIf="f['email'].touched && f['email'].invalid">
           {{ getFieldError("email") }}
         </small>
-        <small class="p-text-secondary" *ngIf="f['email'].pending">
+        <small class="text-color-secondary" *ngIf="f['email'].pending">
           Checking availability...
         </small>
       </div>
 
-      <div>
-        <label for="role" class="font-semibold mb-2">Role</label>
-        <p-dropdown
-          id="role"
-          [options]="roles"
-          formControlName="role"
-          placeholder="Select a role"
-          [class.ng-invalid]="f['role'].invalid && f['role'].touched"
-          class="w-full"
-        ></p-dropdown>
-        <small
-          class="p-error block mt-1"
-          *ngIf="f['role'].touched && f['role'].invalid"
-        >
-          {{ getFieldError("role") }}
-        </small>
+      <div class="grid">
+        <div class="col-12 md:col-6">
+          <div class="field mb-3">
+            <label for="username">Username</label>
+            <input
+              id="username"
+              pInputText
+              type="text"
+              formControlName="username"
+              placeholder="Choose a username"
+              [class.ng-invalid]="f['username'].invalid && f['username'].touched"
+              class="w-full"
+            />
+            <small class="p-error block mt-1" *ngIf="f['username'].touched && f['username'].invalid">
+              {{ getFieldError("username") }}
+            </small>
+            <small class="text-color-secondary" *ngIf="f['username'].pending">
+              Checking availability...
+            </small>
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="field mb-3">
+            <label for="role">Role</label>
+            <p-dropdown
+              id="role"
+              [options]="roles"
+              formControlName="role"
+              placeholder="Select a role"
+              [class.ng-invalid]="f['role'].invalid && f['role'].touched"
+              styleClass="w-full"
+            ></p-dropdown>
+            <small class="p-error block mt-1" *ngIf="f['role'].touched && f['role'].invalid">
+              {{ getFieldError("role") }}
+            </small>
+          </div>
+        </div>
       </div>
 
-      <div class="field mb-4">
-        <label for="password" class="font-semibold mb-2">Password</label>
-        <p-password
-          id="password"
-          formControlName="password"
-          placeholder="Enter password"
-          [toggleMask]="true"
-          [class.ng-invalid]="f['password'].invalid && f['password'].touched"
-          styleClass="w-full"
-        ></p-password>
-        <small
-          class="p-error block mt-1"
-          *ngIf="f['password'].touched && f['password'].invalid"
-        >
-          {{ getFieldError("password") }}
-        </small>
-        <ul class="text-sm mt-2 pl-4" *ngIf="f['password'].value">
-          <li
-            [class.text-green-600]="hasMinLength(f['password'].value)"
-            class="text-red-600"
-          >
-            ✓ At least 8 characters
-          </li>
-          <li
-            [class.text-green-600]="hasUpperCase(f['password'].value)"
-            class="text-red-600"
-          >
-            ✓ One uppercase letter
-          </li>
-          <li
-            [class.text-green-600]="hasLowerCase(f['password'].value)"
-            class="text-red-600"
-          >
-            ✓ One lowercase letter
-          </li>
-          <li
-            [class.text-green-600]="hasNumber(f['password'].value)"
-            class="text-red-600"
-          >
-            ✓ One number
-          </li>
-        </ul>
-      </div>
-
-      <div class="field mb-6">
-        <label for="confirmPassword" class="font-semibold mb-2"
-          >Confirm Password</label
-        >
-        <p-password
-          id="confirmPassword"
-          formControlName="confirmPassword"
-          placeholder="Confirm your password"
-          [toggleMask]="true"
-          [feedback]="false"
-          [class.ng-invalid]="
-            f['confirmPassword'].invalid && f['confirmPassword'].touched
-          "
-          styleClass="w-full"
-        ></p-password>
-        <small
-          class="p-error block mt-1"
-          *ngIf="
-            registerForm.errors?.['passwordMismatch'] &&
-            f['confirmPassword'].touched
-          "
-        >
-          Passwords do not match
-        </small>
+      <div class="grid">
+        <div class="col-12 md:col-6">
+          <div class="field mb-3">
+            <label for="password">Password</label>
+            <p-password
+              id="password"
+              formControlName="password"
+              placeholder="Enter password"
+              [toggleMask]="true"
+              [class.ng-invalid]="f['password'].invalid && f['password'].touched"
+              styleClass="w-full"
+            ></p-password>
+            <small class="p-error block mt-1" *ngIf="f['password'].touched && f['password'].invalid">
+              {{ getFieldError("password") }}
+            </small>
+            <div class="flex flex-wrap gap-3 mt-2" *ngIf="f['password'].value">
+              <small class="flex align-items-center gap-1" [class.text-green-500]="hasMinLength(f['password'].value)" [class.text-red-500]="!hasMinLength(f['password'].value)">
+                <i class="pi text-xs" [class.pi-check]="hasMinLength(f['password'].value)" [class.pi-times]="!hasMinLength(f['password'].value)"></i> 8+ chars
+              </small>
+              <small class="flex align-items-center gap-1" [class.text-green-500]="hasUpperCase(f['password'].value)" [class.text-red-500]="!hasUpperCase(f['password'].value)">
+                <i class="pi text-xs" [class.pi-check]="hasUpperCase(f['password'].value)" [class.pi-times]="!hasUpperCase(f['password'].value)"></i> A-Z
+              </small>
+              <small class="flex align-items-center gap-1" [class.text-green-500]="hasLowerCase(f['password'].value)" [class.text-red-500]="!hasLowerCase(f['password'].value)">
+                <i class="pi text-xs" [class.pi-check]="hasLowerCase(f['password'].value)" [class.pi-times]="!hasLowerCase(f['password'].value)"></i> a-z
+              </small>
+              <small class="flex align-items-center gap-1" [class.text-green-500]="hasNumber(f['password'].value)" [class.text-red-500]="!hasNumber(f['password'].value)">
+                <i class="pi text-xs" [class.pi-check]="hasNumber(f['password'].value)" [class.pi-times]="!hasNumber(f['password'].value)"></i> 0-9
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <div class="field mb-3">
+            <label for="confirmPassword">Confirm Password</label>
+            <p-password
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              placeholder="Confirm your password"
+              [toggleMask]="true"
+              [feedback]="false"
+              [class.ng-invalid]="f['confirmPassword'].invalid && f['confirmPassword'].touched"
+              styleClass="w-full"
+            ></p-password>
+            <small
+              class="p-error block mt-1"
+              *ngIf="registerForm.errors?.['passwordMismatch'] && f['confirmPassword'].touched"
+            >
+              Passwords do not match
+            </small>
+          </div>
+        </div>
       </div>
 
       <button
         pButton
         type="submit"
         label="Create Account"
-        class="w-full mb-4"
+        icon="pi pi-user-plus"
+        class="w-full mt-2 mb-3"
         [loading]="loading"
         [disabled]="registerForm.invalid || loading"
       ></button>
     </form>
 
-    <div class="text-center">
-      <p class="text-gray-600">Already have an account?</p>
+    <div class="flex align-items-center justify-content-center gap-1">
+      <span class="text-color-secondary">Already have an account?</span>
       <button
         pButton
         type="button"
         label="Sign in here"
-        class="p-button-text"
+        class="p-button-text p-0"
         (click)="goToLogin()"
       ></button>
     </div>

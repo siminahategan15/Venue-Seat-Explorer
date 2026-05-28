@@ -1,41 +1,52 @@
-<div class="login-container flex align-items-center justify-content-center">
-  <p-card class="login-box shadow-2 surface-card border-round">
+<div class="auth-gradient">
+  <div class="auth-box">
     <div class="text-center mb-5">
-      <h1 class="text-4xl font-bold mb-2">Venue Seat Explorer</h1>
-      <h2 class="text-2xl font-semibold text-900">Sign In</h2>
+      <i class="pi pi-building text-5xl text-primary mb-3"></i>
+      <h1 class="text-4xl font-bold mb-2 mt-0">Venue Seat Explorer</h1>
+      <h2 class="text-2xl font-semibold text-900 mt-0">Sign In</h2>
     </div>
 
-    <div *ngIf="error" class="p-message p-message-error mb-4">
-      <span>{{ error }}</span>
-    </div>
+    <p-message
+      *ngIf="error"
+      severity="error"
+      [text]="error"
+      class="w-full mb-4"
+    ></p-message>
 
     <div class="p-fluid">
       <div class="field mb-4">
         <label for="email" class="font-semibold mb-2">Email</label>
-        <input
-          id="email"
-          pInputText
-          type="email"
-          [(ngModel)]="email"
-          placeholder="Enter your email"
-        />
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-envelope"></i>
+          <input
+            id="email"
+            pInputText
+            type="email"
+            [(ngModel)]="email"
+            placeholder="Enter your email"
+          />
+        </span>
       </div>
 
       <div class="field mb-5">
         <label for="password" class="font-semibold mb-2">Password</label>
-        <input
-          id="password"
-          pInputText
-          type="password"
-          [(ngModel)]="password"
-          placeholder="Enter your password"
-        />
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-lock"></i>
+          <input
+            id="password"
+            pInputText
+            type="password"
+            [(ngModel)]="password"
+            placeholder="Enter your password"
+          />
+        </span>
       </div>
 
       <button
         pButton
         type="button"
         label="Sign In"
+        icon="pi pi-sign-in"
         class="w-full mb-4"
         (click)="onLogin()"
         [loading]="loading"
@@ -43,7 +54,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <span class="text-700">Don't have an account?</span>
+      <span class="text-color-secondary">Don't have an account?</span>
       <button
         pButton
         type="button"
@@ -52,5 +63,5 @@
         (click)="goToRegister()"
       ></button>
     </div>
-  </p-card>
+  </div>
 </div>

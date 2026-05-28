@@ -37,6 +37,7 @@ import { ReviewsAndMediaComponent } from './components/reviews-and-media/reviews
 import { DirectionsComponent } from './components/directions/directions.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { DropdownModule } from 'primeng/dropdown';
     FileUploadModule,
     MultiSelectModule,
     DropdownModule,
+    TooltipModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

@@ -1,5 +1,19 @@
 <div class="p-4">
-  <h1 class="text-3xl font-bold mb-4">Venues</h1>
+  <div class="page-header flex justify-content-between align-items-center">
+    <div>
+      <h1 class="text-3xl font-bold mb-1">Venues</h1>
+      <p class="mt-0" *ngIf="venues.length > 0">Explore {{ venues.length }} venues</p>
+    </div>
+    <button
+      *ngIf="isUserAdmin()"
+      pButton
+      type="button"
+      label="Create Venue"
+      icon="pi pi-plus"
+      class="p-button-success"
+      (click)="router.navigate(['/venues/create'])"
+    ></button>
+  </div>
 
   <div class="flex gap-2 mb-4">
     <span class="p-input-icon-left flex-grow-1">
@@ -23,29 +37,41 @@
     ></button>
   </div>
 
-  <p-progressSpinner *ngIf="loading"></p-progressSpinner>
+  <div class="flex justify-content-center p-6" *ngIf="loading">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
 
-  <p *ngIf="!loading && venues.length === 0">No venues found.</p>
+  <div *ngIf="!loading && venues.length === 0" class="empty-state">
+    <i class="pi pi-building"></i>
+    <h3 class="text-xl font-semibold mb-2">No venues found</h3>
+    <p class="mt-0">Try adjusting your search or create a new venue.</p>
+  </div>
 
-  <div class="grid">
+  <div class="grid venue-grid">
     <div *ngFor="let venue of venues" class="col-12 md:col-6 lg:col-4">
-      <p-card
-        [header]="venue.name"
-        [subheader]="venue.city + ', ' + venue.country"
-        [routerLink]="['/venues', venue._id]"
-      >
-        <p *ngIf="venue.description">{{ venue.description }}</p>
-        <p class="mt-2">Capacity: {{ venue.capacity }}</p>
+      <p-card [routerLink]="['/venues', venue._id]">
+        <ng-template pTemplate="header">
+          <div class="p-3 pb-0">
+            <h3 class="text-xl font-bold mb-1 mt-0">{{ venue.name }}</h3>
+            <div class="flex align-items-center gap-2 text-color-secondary">
+              <i class="pi pi-map-marker"></i>
+              <span>{{ venue.city }}, {{ venue.country }}</span>
+            </div>
+          </div>
+        </ng-template>
+        <p *ngIf="venue.description" class="line-height-3 mt-0 mb-0">
+          {{ venue.description | slice:0:120 }}{{ venue.description.length > 120 ? '...' : '' }}
+        </p>
+        <p *ngIf="!venue.description" class="line-height-3 mt-0 mb-0 font-italic">
+          No description available.
+        </p>
+        <ng-template pTemplate="footer">
+          <div class="flex align-items-center gap-2">
+            <i class="pi pi-users text-color-secondary"></i>
+            <span class="text-color-secondary">Capacity: {{ venue.capacity }}</span>
+          </div>
+        </ng-template>
       </p-card>
     </div>
   </div>
 </div>
-<button
-  *ngIf="isUserAdmin()"
-  pButton
-  type="button"
-  label="Create Venue"
-  icon="pi pi-plus"
-  class="p-button-success m-4"
-  (click)="router.navigate(['/venues/create'])"
-></button>

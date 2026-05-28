@@ -5,7 +5,8 @@ import {
   AsyncValidatorFn,
 } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { debounceTime, map, switchMap, first } from 'rxjs/operators';
+import { timer } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export class CustomValidators {
@@ -61,8 +62,11 @@ export class CustomValidators {
         return null;
       }
 
-      const nameRegex = /^[A-Z][a-z]{2,}$/;
-      return nameRegex.test(value) ? null : { invalidName: true };
+      if (value.trim().length < 2) {
+        return { invalidName: true };
+      }
+
+      return null;
     };
   }
 
@@ -72,18 +76,18 @@ export class CustomValidators {
         return new Promise((resolve) => resolve(null));
       }
 
-      return http
-        .post<{
-          available: boolean;
-          errors?: any;
-        }>(`${environment.apiUrl}/api/auth/check-availability`, {
-          username: control.value,
-        })
-        .pipe(
-          map((response) => {
-            return response.available ? null : { usernameNotAvailable: true };
-          }),
-        );
+      return timer(500).pipe(
+        switchMap(() =>
+          http.post<{ available: boolean; errors?: any }>(
+            `${environment.apiUrl}/api/auth/check-availability`,
+            { username: control.value },
+          ),
+        ),
+        map((response) =>
+          response.available ? null : { usernameNotAvailable: true },
+        ),
+        first(),
+      );
     };
   }
 
@@ -93,18 +97,18 @@ export class CustomValidators {
         return new Promise((resolve) => resolve(null));
       }
 
-      return http
-        .post<{
-          available: boolean;
-          errors?: any;
-        }>(`${environment.apiUrl}/api/auth/check-availability`, {
-          email: control.value,
-        })
-        .pipe(
-          map((response) => {
-            return response.available ? null : { emailNotAvailable: true };
-          }),
-        );
+      return timer(500).pipe(
+        switchMap(() =>
+          http.post<{ available: boolean; errors?: any }>(
+            `${environment.apiUrl}/api/auth/check-availability`,
+            { email: control.value },
+          ),
+        ),
+        map((response) =>
+          response.available ? null : { emailNotAvailable: true },
+        ),
+        first(),
+      );
     };
   }
 }
