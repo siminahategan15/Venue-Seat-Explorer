@@ -31,10 +31,18 @@ export class VenueListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadVenues();
-    this.auth.getCurrentUserMongoDB().subscribe((user) => {
-      if (user) {
-        this.user = user;
+
+    this.auth.authState$.subscribe((appUser) => {
+      if (!appUser) {
+        this.user = null;
+        return;
       }
+      this.auth.getCurrentUserMongoDB().subscribe({
+        next: (user) => {
+          this.user = user;
+        },
+        error: () => {},
+      });
     });
 
     this.searchSubject
