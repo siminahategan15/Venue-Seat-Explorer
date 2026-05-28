@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { VenueService } from 'src/app/services/venue.service';
 
 @Component({
@@ -11,34 +11,43 @@ import { VenueService } from 'src/app/services/venue.service';
 export class CreateVenueComponent implements OnInit {
   venueForm!: FormGroup;
   loading = false;
+  loadingVenue = false;
   error = '';
   selectedLocation: any = null;
+  isEditMode = false;
+  venueId: string | null = null;
 
   categories = [
-    'Stadium',
-    'Theater',
-    'Concert Hall',
-    'Sports',
-    'Museum',
-    'Other',
+    { label: 'Stadium', value: 'Stadium' },
+    { label: 'Theater', value: 'Theater' },
+    { label: 'Concert Hall', value: 'Concert Hall' },
+    { label: 'Sports', value: 'Sports' },
+    { label: 'Museum', value: 'Museum' },
+    { label: 'Other', value: 'Other' },
   ];
   amenities = [
-    'WiFi',
-    'Parking',
-    'Restrooms',
-    'Food Court',
-    'Wheelchair Access',
-    'First Aid',
+    { label: 'WiFi', value: 'WiFi' },
+    { label: 'Parking', value: 'Parking' },
+    { label: 'Restrooms', value: 'Restrooms' },
+    { label: 'Food Court', value: 'Food Court' },
+    { label: 'Wheelchair Access', value: 'Wheelchair Access' },
+    { label: 'First Aid', value: 'First Aid' },
   ];
 
   constructor(
     private fb: FormBuilder,
     private venueService: VenueService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.venueId = this.route.snapshot.params['id'] || null;
+    this.isEditMode = !!this.venueId;
+    if (this.isEditMode) {
+      this.loadVenue();
+    }
   }
 
   initializeForm(): void {
@@ -55,6 +64,33 @@ export class CreateVenueComponent implements OnInit {
       amenities: [[]],
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
+    });
+  }
+
+  loadVenue(): void {
+    this.loadingVenue = true;
+    this.venueService.getVenueById(this.venueId!).subscribe({
+      next: (venue) => {
+        this.venueForm.patchValue({
+          name: venue.name,
+          city: venue.city,
+          country: venue.country,
+          capacity: venue.capacity,
+          description: venue.description,
+          address: venue.location?.address || '',
+          phone: venue.phone || '',
+          website: venue.website || '',
+          categories: venue.categories || [],
+          amenities: venue.amenities || [],
+          latitude: venue.location?.latitude || '',
+          longitude: venue.location?.longitude || '',
+        });
+        this.loadingVenue = false;
+      },
+      error: () => {
+        this.error = 'Failed to load venue';
+        this.loadingVenue = false;
+      },
     });
   }
 
@@ -95,12 +131,15 @@ export class CreateVenueComponent implements OnInit {
         },
       };
 
-      const response = await this.venueService
-        .createVenue(venueData)
-        .toPromise();
-      this.router.navigate(['/venue', response._id]);
+      if (this.isEditMode) {
+        await this.venueService.updateVenue(this.venueId!, venueData).toPromise();
+        this.router.navigate(['/venues', this.venueId]);
+      } else {
+        const response = await this.venueService.createVenue(venueData).toPromise();
+        this.router.navigate(['/venue', response._id]);
+      }
     } catch (err: any) {
-      this.error = err?.error?.message || 'Failed to create venue';
+      this.error = err?.error?.message || (this.isEditMode ? 'Failed to update venue' : 'Failed to create venue');
       this.loading = false;
     }
   }

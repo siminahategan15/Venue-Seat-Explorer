@@ -5,17 +5,21 @@
         pButton
         type="button"
         icon="pi pi-arrow-left"
-        label="Back to Venues"
+        [label]="isEditMode ? 'Back to Venue' : 'Back to Venues'"
         class="p-button-text"
-        routerLink="/"
+        [routerLink]="isEditMode ? ['/venues', venueId] : ['/']"
       ></button>
     </div>
 
-    <p-card>
+    <div *ngIf="loadingVenue" class="flex justify-content-center p-6">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <p-card *ngIf="!loadingVenue">
       <ng-template pTemplate="header">
         <div class="p-4 pb-0">
-          <h2 class="text-2xl font-bold mt-0 mb-1">Create Venue</h2>
-          <p class="text-color-secondary mt-0 mb-0">Fill in the details to add a new venue</p>
+          <h2 class="text-2xl font-bold mt-0 mb-1">{{ isEditMode ? 'Edit Venue' : 'Create Venue' }}</h2>
+          <p class="text-color-secondary mt-0 mb-0">{{ isEditMode ? 'Update the venue details' : 'Fill in the details to add a new venue' }}</p>
         </div>
       </ng-template>
 
@@ -51,13 +55,13 @@
           <div class="col-12 md:col-6">
             <div class="field mb-3">
               <label>Categories</label>
-              <p-multiSelect [options]="categories" formControlName="categories" optionLabel="" styleClass="w-full" placeholder="Select categories"></p-multiSelect>
+              <p-multiSelect [options]="categories" formControlName="categories" optionLabel="label" optionValue="value" styleClass="w-full" placeholder="Select categories"></p-multiSelect>
             </div>
           </div>
           <div class="col-12 md:col-6">
             <div class="field mb-3">
               <label>Amenities</label>
-              <p-multiSelect [options]="amenities" formControlName="amenities" optionLabel="" styleClass="w-full" placeholder="Select amenities"></p-multiSelect>
+              <p-multiSelect [options]="amenities" formControlName="amenities" optionLabel="label" optionValue="value" styleClass="w-full" placeholder="Select amenities"></p-multiSelect>
             </div>
           </div>
         </div>
@@ -123,7 +127,7 @@
           <button
             pButton
             type="submit"
-            label="Create Venue"
+            [label]="isEditMode ? 'Save Changes' : 'Create Venue'"
             icon="pi pi-check"
             [disabled]="loading || venueForm.invalid"
             [loading]="loading"
@@ -133,7 +137,7 @@
             type="button"
             label="Cancel"
             class="p-button-outlined"
-            routerLink="/"
+            [routerLink]="isEditMode ? ['/venues', venueId] : ['/']"
           ></button>
         </div>
       </form>

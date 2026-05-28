@@ -16,6 +16,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'venues/:id/edit',
+    component: CreateVenueComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'login',
 
     component: LoginComponent,
