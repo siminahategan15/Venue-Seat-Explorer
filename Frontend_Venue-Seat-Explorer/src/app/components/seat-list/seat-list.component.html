@@ -65,7 +65,6 @@
       </p-card>
     </div>
 
-    <!-- Section tags (visible to all users) -->
     <div *ngIf="sections.length > 0" class="mb-4">
       <div class="flex gap-2 flex-wrap">
         <p-tag
@@ -77,7 +76,7 @@
             *ngIf="isAdmin"
             pButton
             type="button"
-            icon="pi pi-times"
+            icon="pi pi-trash"
             class="p-button-rounded p-button-danger p-button-text p-button-sm ml-2"
             (click)="deleteSection(section._id)"
           ></button>
@@ -91,9 +90,8 @@
     </div>
   </div>
 
-  <!-- Seats -->
   <div class="flex justify-content-between align-items-center mb-4">
-    <h3 class="text-2xl font-bold m-0">Available Seats</h3>
+    <h3 class="text-2xl font-bold m-0">Seat Map</h3>
     <button
       pButton
       type="button"
@@ -103,6 +101,26 @@
       (click)="showCreateForm = !showCreateForm"
       class="p-button-success"
     ></button>
+  </div>
+
+  <div *ngIf="sections.length > 0" class="flex gap-2 flex-wrap mb-4">
+    <button
+      class="section-filter-btn"
+      [class.active]="selectedSectionId === null"
+      (click)="filterBySection(null)"
+    >
+      All
+    </button>
+    <button
+      *ngFor="let section of sections"
+      class="section-filter-btn"
+      [class.active]="selectedSectionId === section._id"
+      [style.borderColor]="selectedSectionId === section._id ? getSectionColor(section._id) : ''"
+      [style.background]="selectedSectionId === section._id ? getSectionColor(section._id) : ''"
+      (click)="filterBySection(section._id)"
+    >
+      {{ section.name }}
+    </button>
   </div>
 
   <div *ngIf="showCreateForm && isAdmin" class="mb-5">
@@ -160,37 +178,79 @@
     </p-card>
   </div>
 
-  <div class="grid">
-    <div *ngFor="let seat of seats" class="col-6 md:col-3 lg:col-2">
-      <div
-        class="seat-card"
-        [class.selected]="selectedSeat?._id === seat._id"
-        (click)="selectSeat(seat)"
+  <div class="arena-map-container" *ngIf="seatPositions.length > 0">
+    <svg
+      [attr.viewBox]="'0 0 ' + mapWidth + ' ' + mapHeight"
+      class="arena-map"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect
+        [attr.x]="stageX"
+        [attr.y]="stageY"
+        [attr.width]="stageWidth"
+        [attr.height]="stageHeight"
+        rx="10"
+        class="arena-stage"
+      />
+      <text
+        [attr.x]="stageX + stageWidth / 2"
+        [attr.y]="stageY + stageHeight / 2"
+        text-anchor="middle"
+        dominant-baseline="central"
+        class="arena-stage-label"
       >
-        <i class="pi pi-ticket text-2xl mb-2 text-primary"></i>
-        <p class="font-bold text-lg mb-1">{{ seat.seatNumber }}</p>
-        <p class="text-sm text-color-secondary mb-1">Row {{ seat.row }}</p>
-        <p class="text-xs text-color-secondary mt-1">
-          {{ getSectionName(seat.sectionId?._id || seat.sectionId) }}
-        </p>
-        <button
-          pButton
-          type="button"
-          icon="pi pi-trash"
-          class="p-button-sm p-button-danger p-button-text mt-2"
-          *ngIf="isAdmin"
-          (click)="deleteSeat(seat._id); $event.stopPropagation()"
-        ></button>
-      </div>
+        STAGE
+      </text>
+
+      <ng-container *ngFor="let label of sectionLabels">
+        <text
+          [attr.x]="label.x"
+          [attr.y]="label.y"
+          text-anchor="middle"
+          dominant-baseline="central"
+          class="arena-section-label"
+          [class.dimmed]="selectedSectionId && selectedSectionId !== label.sectionId"
+        >
+          {{ label.name }}
+        </text>
+      </ng-container>
+
+      <ng-container *ngFor="let pos of seatPositions">
+        <circle
+          [attr.cx]="pos.x"
+          [attr.cy]="pos.y"
+          [attr.r]="isSeatSelected(pos) ? 7 : 5"
+          [attr.fill]="isSeatDimmed(pos) ? '#d1d5db' : pos.color"
+          [attr.stroke]="isSeatSelected(pos) ? '#ffffff' : 'none'"
+          [attr.stroke-width]="isSeatSelected(pos) ? 2 : 0"
+          class="arena-seat"
+          [class.arena-seat-dimmed]="isSeatDimmed(pos)"
+          [class.arena-seat-selected]="isSeatSelected(pos)"
+          (click)="selectSeat(pos.seat)"
+          (mouseenter)="onSeatHover($event, pos)"
+          (mouseleave)="onSeatLeave()"
+        />
+      </ng-container>
+    </svg>
+
+    <div
+      class="arena-tooltip"
+      *ngIf="hoveredSeat"
+      [style.left.px]="tooltipX"
+      [style.top.px]="tooltipY"
+    >
+      <strong>Seat {{ hoveredSeat.seat.seatNumber }}</strong>
+      <span>Row {{ hoveredSeat.seat.row }}</span>
+      <span>{{ getSectionName(hoveredSeat.sectionId) }}</span>
     </div>
   </div>
 
-  <div *ngIf="seats.length === 0 && !loading" class="empty-state mt-4">
+  <div *ngIf="seatPositions.length === 0 && !loading" class="empty-state mt-4">
     <i class="pi pi-ticket"></i>
     <p class="mt-0">No seats added yet.</p>
   </div>
 
-  <div *ngIf="selectedSeat" class="mt-5">
+  <div *ngIf="selectedSeat" class="mt-5" #seatDetailSection>
     <p-card>
       <ng-template pTemplate="header">
         <div class="p-3 pb-0 flex justify-content-between align-items-center">

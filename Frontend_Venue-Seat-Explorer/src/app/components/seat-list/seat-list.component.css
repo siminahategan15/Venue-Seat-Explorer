@@ -1,0 +1,70 @@
+.arena-map-container {
+  position: relative;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.arena-map {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+}
+
+.arena-stage {
+  fill: var(--surface-200, #e5e7eb);
+  stroke: var(--surface-400, #9ca3af);
+  stroke-width: 2;
+}
+
+.arena-stage-label {
+  fill: var(--text-color-secondary, #6b7280);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.arena-section-label {
+  fill: var(--text-color-secondary, #6b7280);
+  font-size: 11px;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.arena-section-label.dimmed {
+  opacity: 0.25;
+}
+
+.arena-seat {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.arena-seat:hover {
+  r: 7;
+  filter: brightness(1.2);
+}
+
+.arena-seat-dimmed {
+  opacity: 0.3;
+}
+
+.arena-seat-selected {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+}
+
+.arena-tooltip {
+  position: absolute;
+  background: var(--surface-900, #1f2937);
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10;
+  white-space: nowrap;
+}

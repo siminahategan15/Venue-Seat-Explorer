@@ -201,3 +201,51 @@ a:hover {
 .seat-card.selected p {
   color: #ffffff;
 }
+
+.seat-card.selected .p-button-danger .pi {
+  color: #ffffff;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+  border-radius: 6px 6px 0 0;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link .p-tabview-left-icon {
+  color: #ffffff;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.p-tabview .p-tabview-nav li:not(.p-highlight) .p-tabview-nav-link:hover {
+  background: var(--surface-hover);
+  border-color: var(--surface-border);
+}
+
+.section-filter-btn {
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.section-filter-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.section-filter-btn.active {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}

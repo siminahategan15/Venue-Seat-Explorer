@@ -13,6 +13,7 @@ export interface Venue {
     address?: string;
     placeId?: string;
   };
+  layout?: 'semicircle' | 'full-circle' | 'rectangle' | 'horseshoe';
   categories?: string[];
   amenities?: string[];
   phone?: string;

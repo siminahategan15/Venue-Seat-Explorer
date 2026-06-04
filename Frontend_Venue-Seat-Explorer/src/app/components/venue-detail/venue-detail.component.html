@@ -23,18 +23,29 @@
         <button
           pButton
           type="button"
-          label="Get Directions"
-          icon="pi pi-map"
-          (click)="getDirections()"
+          label="Edit Venue"
+          icon="pi pi-pencil"
+          *ngIf="isAdmin"
+          [routerLink]="['/venues', venue._id, 'edit']"
         ></button>
         <button
           pButton
           type="button"
+          label="Get Directions"
+          icon="pi pi-map"
+          class="p-button-outlined"
+          (click)="getDirections()"
+        ></button>
+        <a
+          pButton
           label="Visit Website"
           icon="pi pi-external-link"
           class="p-button-outlined"
           *ngIf="venue.website"
-        ></button>
+          [href]="venue.website"
+          target="_blank"
+          rel="noopener noreferrer"
+        ></a>
       </div>
     </div>
   </div>
@@ -58,11 +69,13 @@
                   </div>
                 </ng-template>
                 <div class="flex gap-2 flex-wrap">
-                  <p-tag
-                    *ngFor="let cat of venue.categories"
-                    [value]="cat"
-                    severity="info"
-                  ></p-tag>
+                  <ng-container *ngFor="let cat of venue.categories">
+                    <p-tag
+                      *ngIf="cat"
+                      [value]="cat"
+                      severity="info"
+                    ></p-tag>
+                  </ng-container>
                 </div>
               </p-card>
             </div>
@@ -95,7 +108,7 @@
     </p-tabPanel>
 
     <p-tabPanel header="Seats" leftIcon="pi pi-th-large">
-      <app-seat-list [venueId]="venue._id" [isAdmin]="isAdmin"></app-seat-list>
+      <app-seat-list [venueId]="venue._id" [isAdmin]="isAdmin" [layout]="venue.layout || 'semicircle'"></app-seat-list>
     </p-tabPanel>
 
     <p-tabPanel header="Reviews & Photos" leftIcon="pi pi-images">
