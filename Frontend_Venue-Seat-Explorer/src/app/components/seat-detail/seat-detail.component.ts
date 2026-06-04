@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SeatService } from '../../services/seat.service';
 import { ReviewService } from '../../services/review.service';
@@ -11,7 +11,7 @@ import { Seat, Review, Media } from '../../models';
   templateUrl: './seat-detail.component.html',
   styleUrls: ['./seat-detail.component.css'],
 })
-export class SeatDetailComponent implements OnInit {
+export class SeatDetailComponent implements OnInit, OnChanges {
   @Input() seatId!: string;
   seat: Seat | null = null;
   reviews: Review[] = [];
@@ -42,10 +42,31 @@ export class SeatDetailComponent implements OnInit {
   ngOnInit(): void {
     const id = this.seatId || this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.loadSeat(id);
-      this.loadReviews(id);
-      this.loadMedia(id);
+      this.loadAll(id);
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['seatId'] && !changes['seatId'].firstChange && changes['seatId'].currentValue) {
+      this.loadAll(changes['seatId'].currentValue);
+    }
+  }
+
+  private loadAll(id: string): void {
+    this.loading = true;
+    this.reviews = [];
+    this.media = [];
+    this.showReviewForm = false;
+    this.showUploadForm = false;
+    this.loadSeat(id);
+    this.loadReviews(id);
+    this.loadMedia(id);
+  }
+
+  getSectionName(): string {
+    if (!this.seat?.sectionId) return '';
+    const sec = this.seat.sectionId as any;
+    return sec.name || sec;
   }
 
   private getVenueId(): string {

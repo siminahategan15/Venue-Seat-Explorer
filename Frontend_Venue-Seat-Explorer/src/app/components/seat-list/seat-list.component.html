@@ -165,15 +165,17 @@
             </div>
           </div>
         </div>
-        <button
-          pButton
-          type="button"
-          label="Create Seat"
-          icon="pi pi-check"
-          class="mt-3"
-          [loading]="loading"
-          (click)="onCreateSeat()"
-        ></button>
+        <div class="flex align-items-center gap-3 mt-3">
+          <button
+            pButton
+            type="button"
+            label="Create Seat"
+            icon="pi pi-check"
+            [loading]="loading"
+            (click)="onCreateSeat()"
+          ></button>
+          <small *ngIf="createSeatError" class="p-error">{{ createSeatError }}</small>
+        </div>
       </form>
     </p-card>
   </div>
