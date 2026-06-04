@@ -108,7 +108,7 @@
     </p-tabPanel>
 
     <p-tabPanel header="Seats" leftIcon="pi pi-th-large">
-      <app-seat-list [venueId]="venue._id" [isAdmin]="isAdmin"></app-seat-list>
+      <app-seat-list [venueId]="venue._id" [isAdmin]="isAdmin" [layout]="venue.layout || 'semicircle'"></app-seat-list>
     </p-tabPanel>
 
     <p-tabPanel header="Reviews & Photos" leftIcon="pi pi-images">

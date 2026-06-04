@@ -38,8 +38,14 @@ const venueSchema = new mongoose.Schema(
       type: String,
     },
 
-    categories: [String], // ['stadium', 'theater', 'concert', 'sports']
-    amenities: [String], // ['wifi', 'parking', 'restrooms', 'food']
+    layout: {
+      type: String,
+      enum: ['semicircle', 'full-circle', 'rectangle', 'horseshoe'],
+      default: 'semicircle',
+    },
+
+    categories: [String],
+    amenities: [String],
     website: String,
     phone: String,
 

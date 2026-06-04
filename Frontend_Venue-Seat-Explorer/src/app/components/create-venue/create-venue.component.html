@@ -51,6 +51,18 @@
           <textarea pInputTextarea formControlName="description" class="w-full" rows="3" placeholder="Describe this venue..."></textarea>
         </div>
 
+        <div class="field mb-3">
+          <label>Seat Map Layout</label>
+          <p-dropdown
+            [options]="layouts"
+            formControlName="layout"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+            placeholder="Select layout"
+          ></p-dropdown>
+        </div>
+
         <div class="grid">
           <div class="col-12 md:col-6">
             <div class="field mb-3">

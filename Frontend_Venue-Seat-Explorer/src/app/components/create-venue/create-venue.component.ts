@@ -33,6 +33,12 @@ export class CreateVenueComponent implements OnInit {
     { label: 'Wheelchair Access', value: 'Wheelchair Access' },
     { label: 'First Aid', value: 'First Aid' },
   ];
+  layouts = [
+    { label: 'Semicircle (Theater)', value: 'semicircle' },
+    { label: 'Full Circle (Stadium)', value: 'full-circle' },
+    { label: 'Rectangle (Hall)', value: 'rectangle' },
+    { label: 'Horseshoe (U-Shape)', value: 'horseshoe' },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -60,6 +66,7 @@ export class CreateVenueComponent implements OnInit {
       address: ['', Validators.required],
       phone: [''],
       website: [''],
+      layout: ['semicircle'],
       categories: [[]],
       amenities: [[]],
       latitude: ['', Validators.required],
@@ -80,6 +87,7 @@ export class CreateVenueComponent implements OnInit {
           address: venue.location?.address || '',
           phone: venue.phone || '',
           website: venue.website || '',
+          layout: venue.layout || 'semicircle',
           categories: venue.categories || [],
           amenities: venue.amenities || [],
           latitude: venue.location?.latitude || '',
@@ -120,6 +128,7 @@ export class CreateVenueComponent implements OnInit {
         country: formValue.country,
         capacity: formValue.capacity,
         description: formValue.description,
+        layout: formValue.layout,
         phone: formValue.phone,
         website: formValue.website,
         categories: formValue.categories,
