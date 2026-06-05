@@ -43,6 +43,7 @@ export class SeatListComponent implements OnInit {
   createSectionForm!: FormGroup;
   loading = false;
   hoveredSeat: SeatPosition | null = null;
+  createSeatError = '';
   tooltipX = 0;
   tooltipY = 0;
 
@@ -436,7 +437,11 @@ export class SeatListComponent implements OnInit {
 
   onCreateSeat(): void {
     this.createSeatForm.markAllAsTouched();
-    if (!this.createSeatForm.valid) return;
+    this.createSeatError = '';
+    if (!this.createSeatForm.valid) {
+      this.createSeatError = 'Please fill all fields.';
+      return;
+    }
 
     this.loading = true;
     const seatData = {
@@ -455,6 +460,7 @@ export class SeatListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to create seat:', err);
+        this.createSeatError = err.error?.message || 'Failed to create seat.';
         this.loading = false;
       },
     });

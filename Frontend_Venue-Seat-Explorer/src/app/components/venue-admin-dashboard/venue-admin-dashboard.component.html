@@ -1,9 +1,9 @@
 <div class="p-2">
   <div class="mb-5">
     <h3 class="text-2xl font-bold mb-4 mt-0">Admin Dashboard</h3>
-    <div class="grid">
+    <div class="grid equal-height-cards">
       <div *ngFor="let stat of stats" class="col-12 md:col-3">
-        <p-card class="stat-card">
+        <p-card>
           <ng-template pTemplate="header">
             <div class="p-3 pb-0">
               <h5 class="font-semibold mt-0 mb-0">{{ stat.venue.name }}</h5>
@@ -114,60 +114,122 @@
   </p-tabView>
 
   <!-- Seat Management -->
-  <div *ngIf="isAdmin" class="mt-5">
-    <h3 class="text-xl font-bold mb-3">Manage Seats</h3>
-    <p-card>
-      <form (ngSubmit)="onAddSeat()">
-        <div class="grid">
-          <div class="col-12 md:col-4">
-            <div class="field">
-              <label>Section</label>
-              <input
-                pInputText
-                placeholder="Section"
-                [(ngModel)]="newSeat.section"
-                name="section"
-                required
-                class="w-full"
-              />
-            </div>
-          </div>
-          <div class="col-12 md:col-4">
-            <div class="field">
-              <label>Row</label>
-              <input
-                pInputText
-                placeholder="Row"
-                [(ngModel)]="newSeat.row"
-                name="row"
-                required
-                class="w-full"
-              />
-            </div>
-          </div>
-          <div class="col-12 md:col-4">
-            <div class="field">
-              <label>Seat Number</label>
-              <input
-                pInputText
-                placeholder="Seat Number"
-                [(ngModel)]="newSeat.seatNumber"
-                name="seatNumber"
-                required
-                class="w-full"
-              />
-            </div>
-          </div>
-        </div>
-        <button pButton type="submit" label="Add Seat" icon="pi pi-plus" class="mt-3"></button>
-      </form>
-    </p-card>
-
-    <div *ngIf="seats.length > 0" class="mt-3">
-      <div *ngFor="let seat of seats" class="surface-card border-round p-3 mb-2 flex align-items-center gap-3 border-1 surface-border">
-        <i class="pi pi-ticket text-primary"></i>
-        <span>{{ seat.section }} - Row {{ seat.row }}, Seat {{ seat.seatNumber }}</span>
-      </div>
+  <div class="mt-5">
+    <div class="flex justify-content-between align-items-center mb-3">
+      <h3 class="text-xl font-bold m-0">Manage Seats</h3>
+      <span class="text-color-secondary">{{ seats.length }} seats total</span>
     </div>
+
+    <!-- Section filter -->
+    <div class="flex gap-2 flex-wrap mb-3" *ngIf="sections.length > 0">
+      <button
+        pButton
+        type="button"
+        [label]="'All (' + seats.length + ')'"
+        class="p-button-sm"
+        [class.p-button-outlined]="seatFilterSection !== null"
+        (click)="seatFilterSection = null"
+      ></button>
+      <button
+        *ngFor="let section of sections"
+        pButton
+        type="button"
+        [label]="section.name"
+        class="p-button-sm p-button-outlined"
+        [class.p-button-outlined]="seatFilterSection !== section._id"
+        (click)="seatFilterSection = section._id"
+      ></button>
+    </div>
+
+    <p-table
+      [value]="filteredSeats"
+      [paginator]="true"
+      [rows]="15"
+      [rowsPerPageOptions]="[10, 15, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} seats"
+      responsiveLayout="scroll"
+      [globalFilterFields]="['seatNumber', 'row']"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="seatNumber">Seat # <p-sortIcon field="seatNumber"></p-sortIcon></th>
+          <th pSortableColumn="row">Row <p-sortIcon field="row"></p-sortIcon></th>
+          <th>Section</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-seat>
+        <tr>
+          <td>
+            <span *ngIf="editingSeatId !== seat._id">{{ seat.seatNumber }}</span>
+            <input *ngIf="editingSeatId === seat._id" pInputText [(ngModel)]="editSeatData.seatNumber" class="w-4rem" />
+          </td>
+          <td>
+            <span *ngIf="editingSeatId !== seat._id">{{ seat.row }}</span>
+            <input *ngIf="editingSeatId === seat._id" pInputText [(ngModel)]="editSeatData.row" class="w-4rem" />
+          </td>
+          <td>
+            <span *ngIf="editingSeatId !== seat._id">{{ getSectionName(seat.sectionId?._id || seat.sectionId) }}</span>
+            <p-dropdown
+              *ngIf="editingSeatId === seat._id"
+              [options]="sections"
+              [(ngModel)]="editSeatData.sectionId"
+              optionLabel="name"
+              optionValue="_id"
+              class="w-8rem"
+            ></p-dropdown>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <button
+                *ngIf="editingSeatId !== seat._id"
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                class="p-button-sm p-button-outlined"
+                (click)="startEditSeat(seat)"
+                pTooltip="Edit"
+              ></button>
+              <button
+                *ngIf="editingSeatId === seat._id"
+                pButton
+                type="button"
+                icon="pi pi-check"
+                class="p-button-sm p-button-success"
+                (click)="saveEditSeat(seat._id)"
+                pTooltip="Save"
+              ></button>
+              <button
+                *ngIf="editingSeatId === seat._id"
+                pButton
+                type="button"
+                icon="pi pi-times"
+                class="p-button-sm p-button-outlined"
+                (click)="editingSeatId = null"
+                pTooltip="Cancel"
+              ></button>
+              <button
+                *ngIf="editingSeatId !== seat._id"
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-sm p-button-danger p-button-outlined"
+                (click)="deleteSeat(seat._id)"
+                pTooltip="Delete"
+              ></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center text-color-secondary p-4">
+            <i class="pi pi-ticket mr-2"></i>
+            No seats found
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
 </div>
