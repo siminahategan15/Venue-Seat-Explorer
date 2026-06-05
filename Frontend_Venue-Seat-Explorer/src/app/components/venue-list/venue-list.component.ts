@@ -41,7 +41,7 @@ export class VenueListComponent implements OnInit {
         next: (user) => {
           this.user = user;
         },
-        error: () => {},
+        error: (err) => console.error('Failed to fetch user:', err),
       });
     });
 

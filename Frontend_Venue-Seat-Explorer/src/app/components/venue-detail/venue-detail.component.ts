@@ -1,4 +1,4 @@
-declare var google: any;
+declare const google: any;
 
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';

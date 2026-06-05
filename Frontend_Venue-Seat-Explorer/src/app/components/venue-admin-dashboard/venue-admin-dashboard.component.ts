@@ -18,7 +18,7 @@ export class VenueAdminDashboardComponent implements OnInit {
   flaggedPhotos: any[] = [];
   seats: Seat[] = [];
   newSeat: Partial<Seat> = { section: '', row: '', seatNumber: '' };
-  isAdmin: boolean = true;
+  isAdmin = true;
 
   constructor(
     private venueService: VenueService,
