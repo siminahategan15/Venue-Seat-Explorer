@@ -1,4 +1,4 @@
-declare var google: any;
+declare const google: any;
 
 import {
   Component,
@@ -284,7 +284,7 @@ export class DirectionsComponent implements OnInit, OnDestroy {
           }
         });
       },
-      () => {},
+      (error) => console.error('Geolocation error:', error),
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 15000 },
     );
   }
