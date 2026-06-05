@@ -91,7 +91,7 @@
       <div class="grid">
         <div *ngFor="let photo of flaggedPhotos" class="col-12 md:col-4 lg:col-3">
           <p-card>
-            <img [src]="photo.url" class="w-full border-round mb-3" />
+            <img [src]="photo.url" alt="Flagged photo" class="w-full border-round mb-3" />
             <p-tag [value]="photo.flagReason" severity="warning" class="mb-2"></p-tag>
             <div class="mt-2">
               <button
